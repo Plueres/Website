@@ -2,24 +2,43 @@
     <div class="about">
         <h1>About Page</h1>
         <p>This is the about page.</p>
+        <ThemeProvider :theme="theme">
+            <CssBaseline />
+            <Button variant="contained" color="primary" startIcon>
+                <HomeIcon />
+                Home
+            </Button>
+        </ThemeProvider>
+        <p>
+            What Should Be On a Web Developer Portfolio? <br>
+            Include at least these in your web developer portfolio: <br>
+            – Contact information, including relevant social media accounts <br>
+            – Short bio and your photo <br>
+            – Relevant experience and skills with context <br>
+            – Personal projects <br>
+            – Documented source code <br>
+            – Education <br>
+            – Awards/recognition <br>
+            – Downloadable web developer resume
+        </p>
     </div>
-    <p>
-        What Should Be On a Web Developer Portfolio?
-        Include at least these in your web developer portfolio:
-        – Contact information, including relevant social media accounts
-        – Short bio and your photo
-        – Relevant experience and skills with context
-        – Personal projects
-        – Documented source code
-        – Education
-        – Awards/recognition
-        – Downloadable web developer resume
-    </p>
 </template>
 
 <script>
+import { inject } from 'vue';
+import Button from '@mui/material/Button';
+import HomeIcon from '@mui/icons-material/Home';
+
 export default {
     name: 'AboutPage',
+    components: {
+        Button,
+        HomeIcon,
+    },
+    setup() {
+        const theme = inject('theme');
+        return { theme };
+    },
 };
 </script>
 
