@@ -2,13 +2,6 @@
     <div class="about">
         <h1>About Page</h1>
         <p>This is the about page.</p>
-        <ThemeProvider :theme="theme">
-            <CssBaseline />
-            <Button variant="contained" color="primary" startIcon>
-                <HomeIcon />
-                Home
-            </Button>
-        </ThemeProvider>
         <p>
             What Should Be On a Web Developer Portfolio? <br>
             Include at least these in your web developer portfolio: <br>
@@ -21,6 +14,13 @@
             – Awards/recognition <br>
             – Downloadable web developer resume
         </p>
+        <ThemeProvider :theme="theme">
+            <CssBaseline />
+            <Button variant="contained" color="primary" startIcon>
+                <HomeIcon />
+                Home
+            </Button>
+        </ThemeProvider>
     </div>
 </template>
 
