@@ -13,9 +13,24 @@
         </div>
         <button @click="sendData">Send Data</button>
 
-        <div v-if="data">
+        <div v-if="data && data.length">
             <h2>API Response:</h2>
-            <pre>{{ data }}</pre>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field 1</th>
+                        <th>Field 2</th>
+                        <th>Field 3</th> <!-- Add more headers as needed -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in data" :key="index">
+                        <td>{{ item[0] }}</td>
+                        <td>{{ item[1] }}</td>
+                        <td>{{ item[2] }}</td> <!-- Add more columns as needed -->
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div v-else>
             <p>Loading...</p>
@@ -31,7 +46,6 @@ export default {
             data: null,
             id: '',
             name: '',
-            apiKey: 'API1', // Add your API key here
         };
     },
     mounted() {
@@ -49,11 +63,10 @@ export default {
         },
         async sendData() {
             try {
-                const response = await fetch('https://regrify-api.vercel.app/api/data', {
+                const response = await fetch('https://regrify-api.vercel.app/api/post-games', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${this.apiKey}`, // Add the API key to the headers
                     },
                     body: JSON.stringify({
                         id: this.id,
@@ -79,5 +92,22 @@ export default {
 <style scoped>
 .Dashboard {
     padding: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+th {
+    background-color: #f2f2f2;
+    text-align: left;
 }
 </style>
