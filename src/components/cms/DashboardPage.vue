@@ -18,16 +18,12 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Field 1</th>
-                        <th>Field 2</th>
-                        <th>Field 3</th> <!-- Add more headers as needed -->
+                        <th v-for="(value, key) in data[0]" :key="key">{{ key }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in data" :key="index">
-                        <td>{{ item[0] }}</td>
-                        <td>{{ item[1] }}</td>
-                        <td>{{ item[2] }}</td> <!-- Add more columns as needed -->
+                        <td v-for="(value, key) in item" :key="key">{{ value }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -56,6 +52,7 @@ export default {
             try {
                 const response = await fetch('https://regrify-api.vercel.app/api/get-games');
                 const result = await response.json();
+                console.log('Fetched data:', result); // Log the fetched data
                 this.data = result;
             } catch (error) {
                 console.error('Error fetching data:', error);
