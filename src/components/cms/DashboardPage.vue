@@ -50,7 +50,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await fetch('https://regrify-api.vercel.app/api/get-games');
+                const response = await fetch('https://regrify-api.vercel.app/api/get-movies');
                 const result = await response.json();
                 console.log('Fetched data:', result); // Log the fetched data
                 this.data = result;
@@ -60,7 +60,7 @@ export default {
         },
         async sendData() {
             try {
-                const response = await fetch('https://regrify-api.vercel.app/api/post-games', {
+                const response = await fetch('https://regrify-api.vercel.app/api/post-movies', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
