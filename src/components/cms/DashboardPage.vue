@@ -40,7 +40,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await fetch('https://regrify-api.vercel.app/api/data');
+                const response = await fetch('https://regrify-api.vercel.app/api/get-games');
                 const result = await response.json();
                 this.data = result;
             } catch (error) {
