@@ -3,17 +3,38 @@
         <h1>games Page</h1>
         <p>This is the gameslist page.</p>
 
+        <!-- Display raw JSON output -->
+        <!-- <div v-if="data">
+            <h2>Raw API Response:</h2>
+            <pre>{{ data }}</pre>
+        </div> -->
+
         <div v-if="data && data.length">
-            <h2>API Response:</h2>
+            <h2>Games:</h2>
             <table>
                 <thead>
                     <tr>
-                        <th v-for="(value, key) in data[0]" :key="key">{{ key }}</th>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Tags</th>
+                        <th>Played</th>
+                        <th>Finished</th>
+                        <th>Personal Rating</th>
+                        <th>Review</th>
+                        <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in data" :key="index">
-                        <td v-for="(value, key) in item" :key="key">{{ value }}</td>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.tags }}</td>
+                        <td>{{ item.played }}</td>
+                        <td>{{ item.finished }}</td>
+                        <td>{{ item.personal_rating }}</td>
+                        <td>{{ item.review }}</td>
+                        <!-- !Does not work yet -->
+                        <td><router-link>Edit</router-link></td>
                     </tr>
                 </tbody>
             </table>
@@ -40,9 +61,9 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await fetch('https://regrify-api.vercel.app/api/games/get', {
+                const response = await fetch('http://localhost:3000/api/games/get', {
                     headers: {
-                        'Authorization': 'Bearer 8f3b2c1d-4e5f-6a7b-8c9d-0e1f2a3b4c5d' // Replace with your actual API key
+                        'x-api-key': '8f3b2c1d-4e5f-6a7b-8c9d-0e1f2a3b4c5d' // Replace with your actual API key
                     }
                 });
                 const result = await response.json();

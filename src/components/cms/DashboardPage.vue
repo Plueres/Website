@@ -39,9 +39,9 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await fetch('https://regrify-api.vercel.app/api/get-all', {
+                const response = await fetch('http://localhost:3000/api/get-all', {
                     headers: {
-                        'Authorization': 'Bearer 8f3b2c1d-4e5f-6a7b-8c9d-0e1f2a3b4c5d' // Replace with your actual API key
+                        'x-api-key': 'Bearer 8f3b2c1d-4e5f-6a7b-8c9d-0e1f2a3b4c5d' // Replace with your actual API key
                     }
                 });
                 const result = await response.json();

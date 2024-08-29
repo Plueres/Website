@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HelloWorld from '@/components/HelloWorld.vue';
 import AboutPage from '@/components/AboutPage.vue';
 import DashboardPage from '@/components/cms/DashboardPage.vue';
-import GetGames from '@/components/cms/games/list.vue';
+import GetGames from '@/components/cms/games/get.vue';
 
 const routes = [
     {
@@ -21,7 +21,7 @@ const routes = [
         component: DashboardPage,
     },
     {
-        path: '/dashboard/getgames',
+        path: '/dashboard/games/get',
         name: 'GetGames',
         component: GetGames,
     }
