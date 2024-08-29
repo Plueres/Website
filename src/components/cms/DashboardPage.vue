@@ -50,7 +50,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await fetch('http://localhost:3001/api/get-games');
+                const response = await fetch('http://localhost:3000/api/get-games');
                 const result = await response.json();
                 console.log('Fetched data:', result); // Log the fetched data
                 this.data = result;
@@ -60,7 +60,7 @@ export default {
         },
         async sendData() {
             try {
-                const response = await fetch('http://localhost:3001/api/post-games', {
+                const response = await fetch('http://localhost:3000/api/post-games', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
