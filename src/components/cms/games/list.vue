@@ -1,7 +1,8 @@
 <template>
     <div class="Dashboard">
-        <h1>Dashboard Page</h1>
-        <p>This is the dashboard page.</p>
+        <h1>games Page</h1>
+        <p>This is the gameslist page.</p>
+
         <div v-if="data && data.length">
             <h2>API Response:</h2>
             <table>
@@ -25,7 +26,7 @@
 
 <script>
 export default {
-    name: 'DashboardPage',
+    name: 'GamesGet',
     data() {
         return {
             data: null,
@@ -39,7 +40,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await fetch('https://regrify-api.vercel.app/api/get-all', {
+                const response = await fetch('https://regrify-api.vercel.app/api/games/get', {
                     headers: {
                         'Authorization': 'Bearer 8f3b2c1d-4e5f-6a7b-8c9d-0e1f2a3b4c5d' // Replace with your actual API key
                     }
