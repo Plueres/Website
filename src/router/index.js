@@ -19,17 +19,36 @@ const routes = [
         path: '/dashboard',
         name: 'Dashboard',
         component: DashboardPage,
+        meta: { requiresAuth: true }, // Protect this route
     },
     {
         path: '/dashboard/games/get',
         name: 'GetGames',
         component: GetGames,
+        meta: { requiresAuth: true }, // Protect this route
+    },
+    {
+        path: '/login',
+        name: 'Auth',
+        component: () => import('@/components/auth/LoginPage.vue'),
     }
 ];
 
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
+});
+
+// Navigation guard to check for authentication
+router.beforeEach((to, from, next) => {
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+    const token = localStorage.getItem('token');
+
+    if (requiresAuth && !token) {
+        next('/login');
+    } else {
+        next();
+    }
 });
 
 export default router;
