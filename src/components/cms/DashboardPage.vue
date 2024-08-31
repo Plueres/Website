@@ -40,7 +40,7 @@ export default {
             try {
                 const response = await fetch('http://localhost:3000/api/get-all', {
                     headers: {
-                        'x-api-key': `Bearer ${process.env.VUE_APP_API_KEY}` // Use environment variable
+                        'x-api-key': process.env.VUE_APP_API_KEY // Use environment variable
                     }
                 });
                 const result = await response.json();
