@@ -39,7 +39,7 @@ export default {
         async fetchData() {
             try {
                 console.log('API Key:', process.env.VUE_APP_API_KEY); // Log the API key
-                const response = await fetch('http://localhost:3000/api/get-all', {
+                const response = await fetch('https://regrify-api.vercel.app/api/get-all', {
                     headers: {
                         'x-api-key': process.env.VUE_APP_API_KEY // Use environment variable
                     }
