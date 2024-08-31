@@ -2,20 +2,23 @@
     <div class="Dashboard">
         <h1>Dashboard Page</h1>
         <p>This is the dashboard page.</p>
-        <div v-if="data && data.length">
+        <div v-if="data">
             <h2>API Response:</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th v-for="(value, key) in data[0]" :key="key">{{ key }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(item, index) in data" :key="index">
-                        <td v-for="(value, key) in item" :key="key">{{ value }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div v-for="(value, key) in data" :key="key">
+                <h3>{{ key }}</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th v-for=" (subValue, subKey) in value[0]" :key="subKey">{{ subKey }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in value" :key="index">
+                            <td v-for="(subValue, subKey) in item" :key="subKey">{{ subValue }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div v-else>
             <p>Loading...</p>
@@ -28,8 +31,6 @@ export default {
     data() {
         return {
             data: null,
-            id: '',
-            name: '',
         };
     },
     mounted() {
@@ -38,15 +39,13 @@ export default {
     methods: {
         async fetchData() {
             try {
-                console.log('API Key:', process.env.VUE_APP_API_KEY); // Log the API key
-                const response = await fetch('https://regrify-api.vercel.app/api/get-all', {
+                const response = await fetch('http://localhost:3000/api/get-all', {
                     headers: {
-                        'x-api-key': process.env.VUE_APP_API_KEY // Use environment variable
+                        'x-api-key': process.env.API_KEY
                     }
                 });
                 const result = await response.json();
-                console.log('Fetched data:', result); // Log the fetched data
-                this.data = result;
+                this.data = result.data;
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
