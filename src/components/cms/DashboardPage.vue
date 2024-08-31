@@ -38,6 +38,7 @@ export default {
     methods: {
         async fetchData() {
             try {
+                console.log('API Key:', process.env.VUE_APP_API_KEY); // Log the API key
                 const response = await fetch('http://localhost:3000/api/get-all', {
                     headers: {
                         'x-api-key': process.env.VUE_APP_API_KEY // Use environment variable
