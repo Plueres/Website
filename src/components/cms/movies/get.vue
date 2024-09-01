@@ -1,7 +1,7 @@
 <template>
     <div class="Dashboard">
-        <h1>games Page</h1>
-        <p>This is the gameslist page.</p>
+        <h1>Movies Page</h1>
+        <p>This is the Movieslist page.</p>
 
         <!-- Display raw JSON output -->
         <!-- <div v-if="data">
@@ -10,7 +10,7 @@
         </div> -->
 
         <div v-if="data && data.length">
-            <h2>Games:</h2>
+            <h2>Movies:</h2>
             <table>
                 <thead>
                     <tr>
@@ -47,7 +47,7 @@
 
 <script>
 export default {
-    name: 'GetGames',
+    name: 'GetMovies',
     data() {
         return {
             data: null,
@@ -61,7 +61,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await fetch('http://localhost:3000/api/games/get', {
+                const response = await fetch('http://localhost:3000/api/movies/get', {
                     headers: {
                         'x-api-key': process.env.API_KEY
                     }
