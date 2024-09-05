@@ -5,13 +5,14 @@ dotenv.config();
 module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
-    proxy: 'http://localhost:3000',
+    proxy: `${process.env.API_ORIGIN}`,
   },
   configureWebpack: {
     plugins: [
       new webpack.DefinePlugin({
         'process.env': {
           API_KEY: JSON.stringify(process.env.API_KEY),
+          API_ORIGIN: JSON.stringify(process.env.API_ORIGIN),
         },
       }),
     ],

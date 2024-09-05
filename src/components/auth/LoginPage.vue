@@ -37,7 +37,7 @@ export default {
     methods: {
         async login() {
             try {
-                const response = await fetch('http://localhost:3000/api/auth', {
+                const response = await fetch(`${process.env.API_ORIGIN}/api/auth`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -45,6 +45,7 @@ export default {
                     body: JSON.stringify({ username: this.username, password: this.password })
                 });
                 const data = await response.json();
+                console.log(data);
                 if (data.error) {
                     this.error = data.error;
                 } else {

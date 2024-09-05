@@ -61,7 +61,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await fetch('http://localhost:3000/api/movies/get', {
+                const response = await fetch(`${process.env.API_ORIGIN}/api/movies/get`, {
                     headers: {
                         'x-api-key': process.env.API_KEY
                     }

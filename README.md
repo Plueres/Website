@@ -29,8 +29,10 @@ sec color: ECEDC0 || EDE59A
 accent:
 
 Projects:
-Spicetify plugin
-spicetify snippets
-Old page with blog
+
+- Spicetify plugin
+- Spicetify snippets
+- Old page with blog
+- Projects with MiniScript
 
 Made with vue in footer

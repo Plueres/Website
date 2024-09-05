@@ -39,11 +39,15 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await fetch('http://localhost:3000/api/get-all', {
+                const response = await fetch(`${process.env.API_ORIGIN}/api/get-all`, {
                     headers: {
                         'x-api-key': process.env.API_KEY
                     }
                 });
+                if (!response.ok) {
+                    console.log('API_ORIGIN:', process.env.API_ORIGIN);
+                    throw new Error('Network response was not ok', response.statusText);
+                }
                 const result = await response.json();
                 this.data = result.data;
             } catch (error) {
