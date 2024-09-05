@@ -13,7 +13,7 @@
             </div>
             <nav class="nav-menu" :class="{ 'active': isMenuOpen }">
                 <ul>
-                    <li><a href="#" class="nav-link">Dashboard</a></li>
+                    <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
                     <li class="dropdown" @click="toggleDropdown('lists')">
                         <a href="#" class="nav-link">Lists</a>
                         <div v-if="isDropdownOpen === 'lists'" class="dropdown-menu">
