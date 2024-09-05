@@ -1,5 +1,6 @@
 <template>
     <div class="Dashboard">
+        <HeaderComponent />
         <h1>Shows Page</h1>
         <p>This is the Showslist page.</p>
 
@@ -46,7 +47,11 @@
 </template>
 
 <script>
+import HeaderComponent from '@/components/cms/HeaderComponent.vue';
 export default {
+    components: {
+        HeaderComponent // Register the Header component
+    },
     name: 'GetShows',
     data() {
         return {

@@ -1,5 +1,6 @@
 <template>
     <div class="Dashboard">
+        <HeaderComponent />
         <h1>Dashboard Page</h1>
         <p>This is the dashboard page.</p>
         <div v-if="data">
@@ -27,7 +28,11 @@
 </template>
 
 <script>
+import HeaderComponent from '@/components/cms/HeaderComponent.vue';
 export default {
+    components: {
+        HeaderComponent // Register the Header component
+    },
     data() {
         return {
             data: null,
