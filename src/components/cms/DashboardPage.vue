@@ -43,8 +43,9 @@ export default {
                 this.loading = 'Loading...';
                 const response = await fetch(`${process.env.API_ORIGIN}/api/get-all`, {
                     headers: {
-                        'x-api-key': process.env.API_KEY
-                    }
+                        'Content-Type': 'application/json',
+                        'x-api-key': process.env.API_KEY, // Ensure this is set correctly
+                    },
                 });
                 if (response.status === 200) {
                     const result = await response.json();
