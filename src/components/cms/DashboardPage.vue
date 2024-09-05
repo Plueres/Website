@@ -21,7 +21,7 @@
             </div>
         </div>
         <div v-else>
-            <p>Loading...</p>
+            <p>{{ loading }}</p>
         </div>
     </div>
 </template>
@@ -31,6 +31,7 @@ export default {
     data() {
         return {
             data: null,
+            loading: '',
         };
     },
     mounted() {
@@ -39,19 +40,22 @@ export default {
     methods: {
         async fetchData() {
             try {
+                this.loading = 'Loading...';
                 const response = await fetch(`${process.env.API_ORIGIN}/api/get-all`, {
                     headers: {
                         'x-api-key': process.env.API_KEY
                     }
                 });
-                if (!response.ok) {
-                    console.log('API_ORIGIN:', process.env.API_ORIGIN);
-                    throw new Error('Network response was not ok', response.statusText);
+                if (response.status === 200) {
+                    const result = await response.json();
+                    this.data = result.data;
+                } else {
+                    this.loading = 'There was an error retrieving the data';
                 }
-                const result = await response.json();
-                this.data = result.data;
             } catch (error) {
                 console.error('Error fetching data:', error);
+                console.log('API_ORIGIN:', process.env.API_ORIGIN);
+                throw new Error('Network response was not ok');
             }
         },
     },
