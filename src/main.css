@@ -6,3 +6,11 @@
     color: #2c3e50;
     margin: 24px;
 }
+
+pre {
+    text-align: left;
+    background: #333;
+    color: #eee;
+    padding: 1rem;
+    border-radius: 6px;
+}

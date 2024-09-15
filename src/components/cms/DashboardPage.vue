@@ -4,7 +4,7 @@
         <h1>Dashboard Page</h1>
         <p>This is the dashboard page.</p>
         <div v-if="data">
-            <h2>API Response:</h2>
+            <!-- <h2>API Response:</h2>
             <div v-for="(value, key) in data" :key="key">
                 <h3>{{ key }}</h3>
                 <table>
@@ -19,7 +19,8 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </div> -->
+            <pre>{{ data }}</pre>
         </div>
         <div v-else>
             <p>{{ loading }}</p>
@@ -54,7 +55,7 @@ export default {
                 });
                 if (response.status === 200) {
                     const result = await response.json();
-                    this.data = result.data;
+                    this.data = result.lists;
                 } else {
                     this.loading = 'There was an error retrieving the data';
                 }

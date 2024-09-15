@@ -17,9 +17,9 @@
                     <li class="dropdown" @click="toggleDropdown('lists')">
                         <a href="#" class="nav-link">Lists</a>
                         <div v-if="isDropdownOpen === 'lists'" class="dropdown-menu">
-                            <a href="/dashboard/games/get">Games</a>
-                            <a href="/dashboard/movies/get">Movies</a>
-                            <a href="/dashboard/shows/get">Shows</a>
+                            <a href="/dashboard/games">Games</a>
+                            <a href="/dashboard/movies">Movies</a>
+                            <a href="/dashboard/shows">Shows</a>
                         </div>
                     </li>
                     <li class="dropdown" @click="toggleDropdown('user')">

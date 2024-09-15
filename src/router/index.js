@@ -3,10 +3,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from '@/components/HomePage.vue';
 import AboutPage from '@/components/AboutPage.vue';
 import DashboardPage from '@/components/cms/DashboardPage.vue';
-import { getRoutes } from './routesGet';
-import { createRoutes } from './routesPost';
-import { editRoutes } from './routesPut';
-import { deleteRoutes } from './routesDelete';
+import GamesList from '@/components/cms/lists/GamesList.vue';
+import MoviesList from '@/components/cms/lists/MoviesList.vue';
+import ShowsList from '@/components/cms/lists/ShowsList.vue';
 
 const routes = [
     {
@@ -30,18 +29,21 @@ const routes = [
         name: 'Auth',
         component: () => import('@/components/auth/LoginPage.vue'),
     },
-    ...getRoutes('games'),
-    ...createRoutes('games'),
-    ...editRoutes('games'),
-    ...deleteRoutes('games'),
-    ...getRoutes('movies'),
-    ...createRoutes('movies'),
-    ...editRoutes('movies'),
-    ...deleteRoutes('movies'),
-    ...getRoutes('shows'),
-    ...createRoutes('shows'),
-    ...editRoutes('shows'),
-    ...deleteRoutes('shows'),
+    {
+        path: '/dashboard/games',
+        name: 'Games',
+        component: GamesList,
+    },
+    {
+        path: '/dashboard/movies',
+        name: 'Movies',
+        component: MoviesList,
+    },
+    {
+        path: '/dashboard/shows',
+        name: 'Shows',
+        component: ShowsList,
+    },
 ];
 
 // Navigation guard to check for authentication
