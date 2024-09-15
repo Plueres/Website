@@ -48,6 +48,7 @@ export default {
                 if (this.mode === 'delete') {
                     // Handle delete logic
                     await this.deleteEntry();
+                    this.$emit('close');
                     return;
                 }
 
@@ -62,6 +63,8 @@ export default {
                 console.log('API URL:', this.apiUrl);
                 console.log('HTTP Method:', this.method);
                 console.log('Data to Send:', dataToSend);
+
+                this.$emit('close');
 
                 // Wrap the dataToSend in an array
                 const response = await fetch(this.apiUrl, {
@@ -108,7 +111,6 @@ export default {
                 }
 
                 this.$emit('delete', this.currentEntry.id); // Emit delete event
-                this.$emit('close'); // Close the modal
             } catch (error) {
                 console.error('Error deleting entry:', error);
             }
