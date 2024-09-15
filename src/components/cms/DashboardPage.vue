@@ -60,6 +60,7 @@ export default {
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
+                this.loading = 'Could not retrieve the data';
                 console.log('API_ORIGIN:', process.env.API_ORIGIN);
                 throw new Error('Network response was not ok');
             }

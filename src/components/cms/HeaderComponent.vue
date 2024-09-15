@@ -47,9 +47,7 @@ export default {
     data() {
         return {
             user: {
-                name: 'John Doe',
-                email: 'john.doe@example.com',
-                avatar: 'https://example.com/avatar.jpg'
+                name: 'Logged In',
             },
             isDropdownOpen: null, // State to manage which dropdown is open
             isMenuOpen: false // State to manage hamburger menu visibility

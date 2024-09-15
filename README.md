@@ -1,4 +1,4 @@
-# regrify.dev
+<!-- # regrify.dev
 
 ## Project setup
 ```
@@ -21,7 +21,7 @@ npm run lint
 ```
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See [Configuration Reference](https://cli.vuejs.org/config/). -->
 
 
 prim color: 81A4FF || 8195FF
