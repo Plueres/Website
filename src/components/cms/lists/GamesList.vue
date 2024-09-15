@@ -11,8 +11,8 @@
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
-                        <th v-for="(item) in fields" :key="item.id" scope="col">
-                            {{ item.label }}
+                        <th v-for="field in fields" :key="field.id" scope="col">
+                            {{ field.label }}
                         </th>
                         <th scope="col">Edit</th>
                         <th scope="col">Delete</th>
@@ -21,12 +21,7 @@
                 <tbody>
                     <tr v-for="(item) in data" :key="item.id">
                         <td>{{ item.id }}</td>
-                        <td>{{ item.title }}</td>
-                        <td>{{ item.tags }}</td>
-                        <td>{{ item.played }}</td>
-                        <td>{{ item.finished }}</td>
-                        <td>{{ item.personal_rating }}</td>
-                        <td>{{ item.review }}</td>
+                        <td v-for="field in fields" :key="field.id" scope="row">{{ item[field.id] }}</td>
                         <td>
                             <button @click="openEditModal(item.id)">Edit</button>
                         </td>
@@ -81,6 +76,13 @@ export default {
     },
     methods: {
         async fetchData() {
+            const now = Date.now();
+            // Check if data is cached and not stale
+            if (this.cache.data && (now - this.lastFetchTime < 60000)) { // 1 minute cache
+                this.data = this.cache.data;
+                return;
+            }
+
             try {
                 const response = await fetch(`${process.env.API_ORIGIN}/api/games/get`, {
                     headers: {
