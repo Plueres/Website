@@ -1,7 +1,7 @@
 <template>
     <div v-if="isVisible" class="modal-overlay">
         <h2>{{ title }}</h2>
-        <form v-if="mode !== 'delete'" @submit.prevent="submitEdit">
+        <form v-if="mode !== 'delete'" @submit.prevent="submit">
             <div v-for="field in fields" :key="field.id">
                 <label :for="field.id">{{ field.label }}</label>
                 <input v-if="field.type === 'text' || field.type === 'number'" :type="field.type" :id="field.id"
@@ -19,22 +19,6 @@
         </div>
     </div>
 </template>
-
-<!-- <template>
-    <div class="modal-overlay" v-if="isVisible">
-        <h2>{{ title }}</h2>
-        <form @submit.prevent="submit">
-            <div v-for="field in fields" :key="field.id">
-                <label :for="field.id">{{ field.label }}</label>
-                <input v-if="field.type === 'text' || field.type === 'number'" :type="field.type" :id="field.id"
-                    v-model="field.value" />
-                <textarea v-if="field.type === 'textarea'" :id="field.id" v-model="field.value"></textarea>
-            </div>
-            <button type="submit">{{ submitButtonText }}</button>
-            <button type="button" @click="$emit('close')">Cancel</button>
-        </form>
-    </div>
-</template> -->
 
 <script>
 export default {
@@ -96,8 +80,10 @@ export default {
 
                 const result = await response.json();
                 this.$emit('save', result); // Emit the result back to the parent
+                this.$emit('close'); // Close the modal
             } catch (error) {
                 console.error('Error submitting edit:', error);
+                console.log(error);
             }
         },
         async confirmDelete() {

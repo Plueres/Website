@@ -4,12 +4,6 @@
         <h1>Games Page</h1>
         <p>This is the gameslist page.</p>
 
-        <!-- Display raw JSON output -->
-        <!-- <div v-if="data">
-            <h2>Raw API Response:</h2>
-            <pre>{{ data }}</pre>
-        </div> -->
-
         <div v-if="data && data.length">
             <h2>Games:</h2>
             <button @click="openCreateModal">Create</button>
