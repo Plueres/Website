@@ -8,14 +8,14 @@
                     v-model="field.value" />
                 <textarea v-if="field.type === 'textarea'" :id="field.id" v-model="field.value"></textarea>
             </div>
-            <button type="submit">{{ submitButtonText }}</button>
-            <button type="button" @click="$emit('close')">Cancel</button>
+            <button class="primary" type="submit">{{ submitButtonText }}</button>
+            <button class="secondary" type="button" @click="$emit('close')">Cancel</button>
         </form>
         <div v-else>
             <p>Are you sure you want to delete this entry?</p>
             <p><strong>{{ currentEntry.title }}</strong></p> <!-- Display the title or any other relevant info -->
-            <button @click="confirmDelete">Delete</button>
-            <button @click="$emit('close')">Cancel</button>
+            <button class="danger" @click="confirmDelete">Delete</button>
+            <button class="secondary" @click="$emit('close')">Cancel</button>
         </div>
     </div>
 </template>
@@ -119,7 +119,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '@/scss/_variables.scss';
+
 .modal-overlay {
     position: fixed;
     top: 0;

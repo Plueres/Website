@@ -1,0 +1,133 @@
+@import "@/scss/_variables";
+// App
+#app {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    margin: $page-margin;
+}
+
+// Code Display
+pre {
+    font-family: $accent-font;
+    text-align: left;
+    background: #333;
+    color: #eee;
+    padding: 1rem;
+    border-radius: $border-radius;
+}
+
+// Text
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+label,
+input,
+textarea,
+select,
+option,
+button,
+a {
+    font-family: $primary-font;
+}
+h1 {
+    font-size: $font-size-h1;
+    color: $head-primary-color;
+}
+h1::selection,
+h1::-moz-selection {
+    background-color: #fff;
+    color: #999;
+}
+h2 {
+    font-size: $font-size-h2;
+    color: $head-secondary-color;
+}
+h3 {
+    font-size: $font-size-h3;
+    color: $head-primary-color;
+}
+h4 {
+    font-size: $font-size-h4;
+    color: $head-secondary-color;
+}
+h5 {
+    font-size: $font-size-h5;
+    color: $head-accent-color;
+}
+h6 {
+    // TODO: define h6
+    font-size: $font-size-h6;
+    color: $head-secondary-color;
+}
+p {
+    font-size: $font-size-p;
+    color: $font-color;
+}
+
+// Button
+button {
+    font-family: $primary-font;
+    font-size: $font-size-p;
+    border-radius: $border-radius;
+    border: none;
+    // padding: 10px 20px;
+    padding: 14px 32px;
+    margin: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    &:hover {
+        transform: scale(1.05);
+    }
+    &.primary {
+        background-color: $button-primary-background-color;
+        color: $button-primary-text-color;
+        &:hover {
+            background-color: darken($button-primary-background-color, 10%);
+            color: lighten($button-primary-text-color, 10%);
+        }
+    }
+    &.secondary {
+        background-color: $button-secondary-background-color;
+        color: $button-secondary-text-color;
+        box-shadow: inset 0 0 0 $button-border-width $button-secondary-border-color;
+        &:hover {
+            background-color: darken($button-secondary-background-color, 10%);
+            color: lighten($button-secondary-text-color, 10%);
+        }
+    }
+    &.accent {
+        background-color: $button-accent-background-color;
+        color: $button-accent-text-color;
+        &:hover {
+            background-color: darken($button-accent-background-color, 10%);
+            color: lighten($button-accent-text-color, 10%);
+        }
+    }
+    &.danger {
+        background-color: #ff0000;
+        color: #fff;
+        &:hover {
+            background-color: #770000;
+        }
+    }
+}
+
+// Responsive Styles Desktop
+@media (min-width: $desktop-min-width) {
+    button {
+        background-color: $primary-color;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    body {
+        background-color: lightblue;
+    }
+}

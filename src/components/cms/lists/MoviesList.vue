@@ -6,7 +6,7 @@
 
         <div v-if="data && data.length">
             <h2>Movies:</h2>
-            <button @click="openCreateModal">Create</button>
+            <button class="primary" @click="openCreateModal">Create</button>
             <div class="card-container" v-for="item in data" :key="item.id">
                 <CardComponent class="card" :data="item" :fields="fields" @edit="openEditModal(item.id)"
                     @delete="openDeleteModal(item.id)" />

@@ -1,11 +1,11 @@
 <template>
     <header class="header">
         <div class="header-content">
-            <div class="logo">
+            <a href="/dashboard" class="logo">
                 <img src="https://raw.githubusercontent.com/Plueres/plueres/main/website_images/icon192.png"
                     alt="Logo" />
                 <h1>CMS Dashboard</h1>
-            </div>
+            </a>
             <div class="hamburger" @click="toggleMenu">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -13,7 +13,6 @@
             </div>
             <nav class="nav-menu" :class="{ 'active': isMenuOpen }">
                 <ul>
-                    <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
                     <li class="dropdown" @click="toggleDropdown('lists')">
                         <a href="#" class="nav-link">Lists</a>
                         <div v-if="isDropdownOpen === 'lists'" class="dropdown-menu">
@@ -29,10 +28,9 @@
                         </div>
                     </li>
                     <li class="dropdown" @click="toggleDropdown('other')">
-                        <a href="#" class="nav-link">Other Options</a>
+                        <a href="#" class="nav-link">Website</a>
                         <div v-if="isDropdownOpen === 'other'" class="dropdown-menu">
-                            <a href="#">Option 1</a>
-                            <a href="#">Option 2</a>
+                            <a href="/">Website</a>
                         </div>
                     </li>
                 </ul>
@@ -69,8 +67,10 @@ export default {
 }
 </script>
 
-<style scoped>
-/* Header */
+<style scoped lang="scss">
+@import '@/scss/_variables';
+
+// Header
 .header {
     background-color: #ffffff;
     padding: 1rem;
@@ -87,6 +87,7 @@ export default {
 .logo {
     display: flex;
     align-items: center;
+    text-decoration: none;
 }
 
 .logo img {
@@ -116,24 +117,17 @@ export default {
 
 .nav-menu {
     display: none;
-    /* Hide nav menu by default on mobile */
     flex-direction: column;
-    /* Stack items vertically */
     width: 100vw;
     height: 100vh;
-    /* Full width */
     position: absolute;
-    /* Position it absolutely */
     top: 0;
-    /* Adjust based on header height */
     left: 0;
     list-style-type: none;
     margin: 0;
     padding: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    /* Transparent black background */
     z-index: 16;
-    /* Ensure it appears above other elements */
 }
 
 .nav-menu ul {
@@ -148,7 +142,6 @@ export default {
 .nav-menu.active {
     display: flex;
     justify-content: center;
-    /* Show nav menu when active */
 }
 
 .nav-link {
@@ -167,7 +160,6 @@ export default {
 
 .dropdown {
     position: relative;
-    /* Position for dropdown */
 }
 
 .dropdown-menu {
@@ -195,10 +187,10 @@ export default {
     background-color: #f0f0f0;
 }
 
-/* Responsive Styles Desktop */
-@media (min-width: 768px) {
+// Responsive Styles Desktop
+@media (min-width: $tablet-min-width) {
 
-    /* Header */
+    // Header
     .hamburger {
         display: none;
     }

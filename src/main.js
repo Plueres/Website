@@ -3,7 +3,7 @@ import App from './App.vue';
 import router from './router';
 import material from './plugins/material';
 import '@mui/material/styles';
-import './main.css';
+import './main.scss';
 
 const app = createApp(App);
 
