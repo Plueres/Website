@@ -1,15 +1,15 @@
 <template>
-    <div class="Dashboard">
-        <HeaderComponent />
+    <HeaderComponent />
+    <div class="page-content">
         <h1>Games Page</h1>
         <p>This is the gameslist page.</p>
 
         <div v-if="data && data.length">
             <h3>Games:</h3>
             <button class="primary" @click="openCreateModal">Create</button>
-            <div class="card-container" v-for="item in data" :key="item.id">
-                <CardComponent class="card" :data="item" :fields="fields" @edit="openEditModal(item.id)"
-                    @delete="openDeleteModal(item.id)" />
+            <div class="card-container">
+                <CardComponent v-for="item in data" :key="item.id" :data="item" :fields="fields"
+                    @edit="openEditModal(item.id)" @delete="openDeleteModal(item.id)" />
             </div>
         </div>
         <div v-else>

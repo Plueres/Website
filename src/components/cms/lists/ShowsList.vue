@@ -1,6 +1,6 @@
 <template>
-    <div class="Dashboard">
-        <HeaderComponent />
+    <HeaderComponent />
+    <div class="page-content">
         <h1>Shows Page</h1>
         <p>This is the showslist page.</p>
 

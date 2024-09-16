@@ -57,6 +57,11 @@ export default {
         },
         toggleMenu() {
             this.isMenuOpen = !this.isMenuOpen; // Toggle hamburger menu visibility
+            if (this.isMenuOpen) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
         },
         logout() {
             console.log('Logging out...');
@@ -74,14 +79,15 @@ export default {
 .header {
     background-color: #ffffff;
     padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
 }
 
 .logo {
@@ -118,7 +124,7 @@ export default {
 .nav-menu {
     display: none;
     flex-direction: column;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     position: absolute;
     top: 0;

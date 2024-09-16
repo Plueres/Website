@@ -4,5 +4,6 @@ export const gameFields = [
     { id: 'played', label: 'Played', type: 'text', value: '' },
     { id: 'finished', label: 'Finished', type: 'text', value: '' },
     { id: 'personal_rating', label: 'Personal Rating', type: 'number', value: '' },
+    { id: 'description', label: 'Description', type: 'textarea', value: '' },
     { id: 'review', label: 'Review', type: 'textarea', value: '' }
 ];
