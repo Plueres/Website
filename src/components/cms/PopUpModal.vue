@@ -162,5 +162,3 @@ export default {
     border-radius: 4px;
 }
 </style>
-
-<!-- ! Make sure that the inputs are entered through where the modal gets imported, not generated from what is already available -->
