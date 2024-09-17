@@ -5,11 +5,11 @@
         <p>This is the movieslist page.</p>
 
         <div v-if="data && data.length">
-            <h2>Movies:</h2>
+            <h3>Movies:</h3>
             <button class="primary" @click="openCreateModal">Create</button>
-            <div class="card-container" v-for="item in data" :key="item.id">
-                <CardComponent class="card" :data="item" :fields="fields" @edit="openEditModal(item.id)"
-                    @delete="openDeleteModal(item.id)" />
+            <div class="card-container">
+                <CardComponent v-for="item in data" :key="item.id" :data="item" :fields="fields"
+                    @edit="openEditModal(item.id)" @delete="openDeleteModal(item.id)" />
             </div>
         </div>
         <div v-else>
@@ -42,7 +42,7 @@ export default {
     name: 'GetMovies',
     data() {
         return {
-            data: null,
+            data: [],
             lastFetchTime: 0,
             isCreateModalVisible: false,
             isEditModalVisible: false,
@@ -97,7 +97,7 @@ export default {
         },
         handleCreateSave(result) {
             console.log('Created result:', result);
-            this.data.push(result);
+            this.data.unshift(result.entities[0]); // Add the new movie to the beginning of the list
             this.closeCreateModal();
         },
         openDeleteModal(id) {
@@ -110,18 +110,26 @@ export default {
         },
         handleDelete(result) {
             console.log('Deleted result:', result);
-            this.data = this.data.filter(item => item.id !== result.id);
+            const index = this.data.findIndex(item => item.id === result);
+            if (index !== -1) {
+                this.data.splice(index, 1); // Remove the item from the list
+            } else {
+                console.error('No entry found for the given ID:', result);
+            }
             this.closeDeleteModal();
         },
         openEditModal(id) {
-            // Find the entry in the data array using the passed id
-            const entryToEdit = this.data.find(item => item.id === id);
-            if (entryToEdit) {
-                this.currentEntry = entryToEdit; // Set the current entry to edit
-                this.resetEditFields(); // Populate the fields with the current entry data
-                this.isEditModalVisible = true; // Show the modal
+            if (Array.isArray(this.data)) {
+                const entryToEdit = this.data.find(item => item.id === id);
+                if (entryToEdit) {
+                    this.currentEntry = entryToEdit; // Set the current entry to edit
+                    this.resetEditFields(); // Populate the fields with the current entry data
+                    this.isEditModalVisible = true;
+                } else {
+                    console.error('No entry found for the given ID:', id);
+                }
             } else {
-                console.error('No entry found for the given ID:', id);
+                console.error('Data is not an array:', this.data);
             }
         },
         closeEditModal() {
@@ -172,26 +180,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-.Dashboard {
-    padding: 20px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th,
-td {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-th {
-    background-color: #f2f2f2;
-    text-align: left;
-}
-</style>
