@@ -1,22 +1,26 @@
 <template>
-    <div v-if="isVisible" class="modal-overlay">
-        <h2>{{ title }}</h2>
-        <form v-if="mode !== 'delete'" @submit.prevent="submit">
-            <div v-for="field in fields" :key="field.id">
-                <label :for="field.id">{{ field.label }}</label>
-                <input v-if="field.type === 'text' || field.type === 'number'" :type="field.type" :id="field.id"
-                    v-model="field.value" />
-                <textarea v-if="field.type === 'textarea'" :id="field.id" v-model="field.value"></textarea>
+    <div v-if="isVisible" class="modal-container">
+        <div class="modal">
+            <h2>{{ title }}</h2>
+            <form v-if="mode !== 'delete'" @submit.prevent="submit">
+                <div class="modal-field" v-for="field in fields" :key="field.id">
+                    <label class="modal-label" :for="field.id">{{ field.label }}</label>
+                    <input class="modal-input" v-if="field.type === 'text' || field.type === 'number'"
+                        :type="field.type" :id="field.id" v-model="field.value" />
+                    <textarea class="modal-textarea" v-if="field.type === 'textarea'" :id="field.id"
+                        v-model="field.value"></textarea>
+                </div>
+                <button class="primary" type="submit">{{ submitButtonText }}</button>
+                <button class="secondary" type="button" @click="$emit('close')">Cancel</button>
+            </form>
+            <div v-else>
+                <p>Are you sure you want to delete this entry?</p>
+                <p><strong>{{ currentEntry.title }}</strong></p> <!-- Display the title or any other relevant info -->
+                <button class="danger" @click="confirmDelete">Delete</button>
+                <button class="secondary" @click="$emit('close')">Cancel</button>
             </div>
-            <button class="primary" type="submit">{{ submitButtonText }}</button>
-            <button class="secondary" type="button" @click="$emit('close')">Cancel</button>
-        </form>
-        <div v-else>
-            <p>Are you sure you want to delete this entry?</p>
-            <p><strong>{{ currentEntry.title }}</strong></p> <!-- Display the title or any other relevant info -->
-            <button class="danger" @click="confirmDelete">Delete</button>
-            <button class="secondary" @click="$emit('close')">Cancel</button>
         </div>
+
     </div>
 </template>
 
@@ -122,45 +126,67 @@ export default {
 <style scoped lang="scss">
 @import '@/scss/_variables.scss';
 
-.modal-overlay {
+.modal-container {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 18;
 }
 
 .modal {
+    width: 80%;
+    height: fit-content;
     background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 400px;
-}
-
-.modal h2 {
-    margin: 0 0 20px;
-}
-
-.modal form {
+    color: black;
+    box-shadow: 0 0 10px 0 darken($cms-background-color, 10%);
     display: flex;
+    padding: 2rem;
+    border-radius: 6px;
+    justify-content: center;
     flex-direction: column;
-}
 
-.modal label {
-    margin-bottom: 5px;
-}
+    form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
 
-.modal input,
-.modal textarea {
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    h2 {
+        margin: 0 0.2rem;
+        font-size: 1.4rem;
+        text-align: left;
+    }
+
+    .modal-field {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .modal-label {
+        margin: 0.5rem;
+        font-size: 1rem;
+        text-align: left;
+    }
+
+    .modal-input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .modal-textarea {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+    }
+
+    button {
+        margin-left: unset;
+        margin-right: unset;
+    }
 }
 </style>

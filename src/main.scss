@@ -8,6 +8,7 @@ body,
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
+    background-color: $cms-background-color;
 }
 .page-content {
     margin: $page-margin;
