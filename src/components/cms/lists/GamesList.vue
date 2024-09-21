@@ -42,7 +42,7 @@ export default {
     data() {
         return {
             data: [],
-            lastFetchTime: 0,
+            lastFetchTime: null,
             isCreateModalVisible: false,
             isEditModalVisible: false,
             isDeleteModalVisible: false,
@@ -82,10 +82,12 @@ export default {
                     'x-api-key': process.env.API_KEY
                 };
 
-                // Add conditional headers if Last-Modified is available
-                headers['If-Modified-Since'] = new Date().toISOString();
 
-                console.log('Headers:', headers);
+                // Add conditional headers if Last-Modified is available
+                if (this.lastFetchTime) {
+                    headers['If-Modified-Since'] = localStorage.getItem('lastFetchTime');
+                }
+                console.log('Headers:', headers['If-Modified-Since']);
                 const response = await fetch(`${process.env.API_ORIGIN}/api/games/get`, { headers });
 
                 if (response.status === 304) {
@@ -101,18 +103,12 @@ export default {
                 const result = await response.json();
                 console.log('Result:', result);
                 this.data = result.entries;
-                this.lastFetchTime = Date.now();
-
-                // Store the Last-Modified for future conditional requests
-                const newLastModified = response.headers.get('Last-Modified');
-                if (newLastModified) {
-                    this.lastModified = newLastModified;
-                    localStorage.setItem('gamesLastModified', this.lastModified);
-                }
-
-                // Save data to localStorage
-                localStorage.setItem('gamesData', JSON.stringify(this.data));
-                localStorage.setItem('gamesLastFetchTime', this.lastFetchTime.toString());
+                // Log before updating lastFetchTime
+                console.log('Updating lastFetchTime. Previous value:', this.lastFetchTime);
+                this.lastFetchTime = new Date().getTime();
+                localStorage.setItem('lastFetchTime', this.lastFetchTime);
+                // Log after updating lastFetchTime
+                console.log('Updated lastFetchTime. New value:', this.lastFetchTime);
 
                 // Log the result to inspect its structure
                 console.log('Games API Response:', result);

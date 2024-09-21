@@ -68,8 +68,6 @@ export default {
                 console.log('HTTP Method:', this.method);
                 console.log('Data to Send:', dataToSend);
 
-                this.$emit('close');
-
                 // Wrap the dataToSend in an array
                 const response = await fetch(this.apiUrl, {
                     method: this.method,
@@ -88,7 +86,7 @@ export default {
                 const result = await response.json();
 
                 // Log the result to understand its structure
-                console.log('API Response:', result);
+                console.log('API Response:', result[0]);
 
                 // Check if result is defined, is an array, and has at least one element
                 if (result && Array.isArray(result) && result.length > 0) {
