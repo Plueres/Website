@@ -65,7 +65,7 @@ export default {
             console.log('Fetching data');
             const now = Date.now();
             // Check if data is cached and not stale
-            if (this.data && (now - this.lastFetchTime < 60000)) { // 1 minute cache
+            if (this.data && (now - this.lastFetchTime < 1800000)) { // 30 minute cache
                 console.log('Using cached data:', this.data);
                 return; // Return early if cached data is valid
             } else {

@@ -31,7 +31,6 @@ import HeaderComponent from '@/components/cms/HeaderComponent.vue';
 import PopUpModal from '@/components/cms/PopUpModal.vue';
 import CardComponent from '@/components/cms/CardComponent.vue';
 import { gameFields } from '@/config/gameFields';
-let callCount = 0;
 
 export default {
     components: {
@@ -52,35 +51,69 @@ export default {
             createApiUrl: `${process.env.API_ORIGIN}/api/games/post`,
             editApiUrl: `${process.env.API_ORIGIN}/api/games/put`,
             deleteApiUrl: `${process.env.API_ORIGIN}/api/games/delete`,
-            apiKey: process.env.API_KEY
+            apiKey: process.env.API_KEY,
+            callCount: 0
         };
     },
     mounted() {
         this.fetchData();
     },
+    created() {
+        // Load cached data from localStorage
+        const cachedData = localStorage.getItem('gamesData');
+        const cachedTime = localStorage.getItem('gamesLastFetchTime');
+        this.callCount = localStorage.getItem('callCount');
+
+        if (cachedData && cachedTime) {
+            this.data = JSON.parse(cachedData);
+            this.lastFetchTime = parseInt(cachedTime, 10);
+        }
+    },
     methods: {
         async fetchData() {
-            callCount++;
-            console.log(`fetchData called ${callCount} times`);
-            console.log('Fetching data');
-            const now = Date.now();
-            // Check if data is cached and not stale
-            if (this.data && (now - this.lastFetchTime < 60000)) { // 1 minute cache
-                console.log('Using cached data:', this.data);
-                return; // Return early if cached data is valid
-            } else {
-                console.log('Data is either null or stale. Fetching new data...'); // Log if condition is not met
-            }
+            this.callCount++;
+            localStorage.setItem('callCount', this.callCount);
+            console.log(`fetchData called ${this.callCount} times`);
+            console.log('Fetching data...');
+
 
             try {
-                const response = await fetch(`${process.env.API_ORIGIN}/api/games/get`, {
-                    headers: {
-                        'x-api-key': process.env.API_KEY
-                    }
-                });
+                const headers = {
+                    'x-api-key': process.env.API_KEY
+                };
+
+                // Add conditional headers if Last-Modified is available
+                headers['If-Modified-Since'] = new Date().toISOString();
+
+                console.log('Headers:', headers);
+                const response = await fetch(`${process.env.API_ORIGIN}/api/games/get`, { headers });
+
+                if (response.status === 304) {
+                    console.log('Data not modified. Using cached data:', this.data);
+                    // Return the cached data
+                    return this.data;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+
                 const result = await response.json();
-                this.data = result;
+                console.log('Result:', result);
+                this.data = result.entries;
                 this.lastFetchTime = Date.now();
+
+                // Store the Last-Modified for future conditional requests
+                const newLastModified = response.headers.get('Last-Modified');
+                if (newLastModified) {
+                    this.lastModified = newLastModified;
+                    localStorage.setItem('gamesLastModified', this.lastModified);
+                }
+
+                // Save data to localStorage
+                localStorage.setItem('gamesData', JSON.stringify(this.data));
+                localStorage.setItem('gamesLastFetchTime', this.lastFetchTime.toString());
+
                 // Log the result to inspect its structure
                 console.log('Games API Response:', result);
             } catch (error) {

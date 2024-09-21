@@ -86,7 +86,17 @@ export default {
                 }
 
                 const result = await response.json();
-                this.$emit('save', result); // Emit the result back to the parent
+
+                // Log the result to understand its structure
+                console.log('API Response:', result);
+
+                // Check if result is defined, is an array, and has at least one element
+                if (result && Array.isArray(result) && result.length > 0) {
+                    this.$emit('save', result[0]); // Emit the first element of the result array back to the parent
+                } else {
+                    throw new Error('Unexpected response format');
+                }
+
                 this.$emit('close'); // Close the modal
             } catch (error) {
                 console.error('Error submitting edit:', error);
