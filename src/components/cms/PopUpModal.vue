@@ -1,5 +1,6 @@
 <template>
     <div v-if="isVisible" class="modal-container">
+    <ToastNotification ref="toastNotification" />
         <div class="modal">
             <h3>{{ title }}</h3>
             <form v-if="mode !== 'delete'" @submit.prevent="submit">
@@ -30,7 +31,11 @@
 </template>
 
 <script>
+import ToastNotification from '@/components/cms/ToastNotification.vue';
 export default {
+    components: {
+        ToastNotification
+    },
     props: {
         entityType: String,
         isVisible: Boolean,
@@ -61,7 +66,9 @@ export default {
                     this.$emit('close');
                     return;
                 }
-                console.warn(this.currentEntry.id);
+                if (this.currentEntry.id) {
+                    console.warn(this.currentEntry);
+                }
 
                 const dataToSend = {
                     ...(this.currentEntry.id ? { id: this.currentEntry.id } : {}), // Include id if currentEntry has an id
@@ -84,32 +91,31 @@ export default {
                     },
                     body: JSON.stringify([dataToSend]) // Send as an array of objects
                 });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Network response was not ok: ${errorText}`);
+                
+                const jsonResponse = await response.json();
+                let result = jsonResponse.data;
+                
+                if (response.status === 409) {
+                    this.$refs.toastNotification.showToast(jsonResponse.message, jsonResponse.messageType);
+                    throw new Error(`Already exists: ${JSON.stringify(jsonResponse.data)}`);
+                } else if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${jsonResponse.data}`);
                 }
 
-                let result = await response.json();
-                result = result.lists[this.entityType].entries;
-
-                // Log the result to understand its structure
-                console.log('API Response:', result);
-                console.log('result is array:', result);
+                console.log('Response:', jsonResponse);
 
                 // Check if result is defined, is an array, and has at least one element
                 if (result && Array.isArray(result) && result.length > 0) {
-                    this.$emit('save', result); // Emit the first element of the result array back to the parent
+                    this.$emit('save', jsonResponse); // Emit the first element of the result array back to the parent
                     this.$emit('close'); // Close the modal
-                    console.log('Emitting save event with:', result[0]);
+                    console.log('Emitting save event with:', jsonResponse.data[0]);
                 } else {
                     throw new Error('Unexpected response format');
                 }
 
                 this.$emit('close'); // Close the modal
             } catch (error) {
-                console.error('Error submitting edit:', error);
-                console.log(error);
+                console.error('Error submitting:', error);
             }
         },
         async confirmDelete() {
@@ -130,6 +136,7 @@ export default {
 
                 if (!response.ok) {
                     const errorText = await response.text();
+                    this.$refs.toastNotification.showToast(errorText.message, errorText.messageType);
                     throw new Error(`Network response was not ok: ${errorText}`);
                 }
 
@@ -212,6 +219,11 @@ export default {
             }
         }
     }
+}
+
+.toast {
+  position: fixed;
+  top: 0;
 }
 
 @media (min-width: $desktop-min-width) {

@@ -1,5 +1,6 @@
 <template>
     <HeaderComponent />
+    <ToastNotification ref="toastNotification" />
     <div class="page-content">
         <h1>Games Page</h1>
         <p>This is the gameslist page.</p>
@@ -41,12 +42,14 @@ import HeaderComponent from '@/components/cms/HeaderComponent.vue';
 import PopUpModal from '@/components/cms/PopUpModal.vue';
 import CardComponent from '@/components/cms/CardComponent.vue';
 import { gameFields } from '@/config/gameFields';
+import ToastNotification from '@/components/cms/ToastNotification.vue';
 
 export default {
     components: {
         HeaderComponent,
         PopUpModal,
-        CardComponent
+        CardComponent,
+        ToastNotification
     },
     name: 'GetGames',
     data() {
@@ -62,7 +65,9 @@ export default {
             editApiUrl: `${process.env.API_ORIGIN}/api/games/put`,
             deleteApiUrl: `${process.env.API_ORIGIN}/api/games/delete`,
             apiKey: process.env.API_KEY,
-            callCount: 0
+            callCount: 0,
+            message: '',
+            messageType: ''
         };
     },
     mounted() {
@@ -85,7 +90,6 @@ export default {
             this.callCount++;
             localStorage.setItem('callCount', this.callCount);
             console.log(`fetchData called ${this.callCount} times`);
-            console.log('Fetching data...');
 
             try {
                 const headers = {
@@ -102,6 +106,7 @@ export default {
 
                 if (response.status === 304) {
                     console.log('Data not modified. Using cached data:', this.data);
+                    this.$refs.toastNotification.showToast(response.message, response.messageType);
                     // Return the cached data
                     return this.data;
                 }
@@ -133,8 +138,9 @@ export default {
             this.isCreateModalVisible = false;
         },
         handleCreateSave(result) {
-            console.log('Created result:', result);
-            this.data.unshift(result[0]); // Add the new game to the beginning of the list
+            console.log('Created result:', result.data);
+            this.$refs.toastNotification.showToast(result.message, result.messageType);
+            this.data.unshift(result.data[0]); // Add the new game to the beginning of the list
             this.closeCreateModal();
         },
         openDeleteModal(id) {
@@ -145,12 +151,14 @@ export default {
             this.isDeleteModalVisible = false;
         },
         handleDelete(result) {
-            console.log('Deleted result:', result);
-            const index = this.data.findIndex(item => item.id === result);
+            console.log('Deleted result:', result.data);
+            const index = this.data.findIndex(item => item.id === result.data);
             if (index !== -1) {
                 this.data.splice(index, 1); // Remove the item from the list
+                this.$refs.toastNotification.showToast(result.message, result.messageType);
             } else {
-                console.error('No entry found for the given ID:', result);
+                console.error('No entry found for the given ID:', result.data);
+                this.$refs.toastNotification.showToast(result.message, result.messageType);
             }
             this.fetchData();
             this.closeDeleteModal();
@@ -173,10 +181,10 @@ export default {
             this.isEditModalVisible = false;
         },
         handleEditSave(result) {
-            console.log('Edited result:', result[0]); // Log the edited result
+            console.log('Edited result:', result.data[0]); // Log the edited result
 
             // Extract the updated game from the response
-            const updatedGame = result[0]; // Assuming there's always one entity in the array
+            const updatedGame = result.data[0]; // Assuming there's always one entity in the array
 
             // Step 1: Find the index of the item to update
             const index = this.data.findIndex(item => item.id === updatedGame.id);
@@ -188,6 +196,7 @@ export default {
                 // Step 3: Update the specific item in the local data array
                 this.data[index] = updatedGame; // Directly update the item
                 localStorage.setItem('gamesData', JSON.stringify(this.data));
+                this.$refs.toastNotification.showToast(result.message, result.messageType);
             } else {
                 console.error('No entry found for the given ID:', updatedGame.id); // Log an error if not found
             }
