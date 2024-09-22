@@ -15,8 +15,9 @@
         <div v-else>
             <p>You are already logged in.</p>
             <button @click="logout">Logout</button>
+            <button @click="Dashboard">Dashboard</button>
         </div>
-        <p v-if="error">{{ error }}</p>
+        <p v-if="message">{{ message }}</p>
     </div>
 </template>
 
@@ -26,12 +27,12 @@ export default {
         return {
             username: '',
             password: '',
-            error: ''
+            message: ''
         };
     },
     computed: {
         isLoggedIn() {
-            return !!localStorage.getItem('token');
+            return !!sessionStorage.getItem('token');
         }
     },
     methods: {
@@ -39,6 +40,7 @@ export default {
             console.time('Login Time'); // Start timing
             try {
                 console.log('Attempting to log in with:', this.username, this.password);
+                this.message = "logging in, please wait...";
                 const response = await fetch(`${process.env.API_ORIGIN}/api/auth`, {
                     method: 'POST',
                     headers: {
@@ -51,20 +53,31 @@ export default {
                 const data = await response.json();
                 console.log('Response from server:', data);
 
-                if (data.error) {
-                    this.error = data.error;
-                } else {
-                    localStorage.setItem('token', data.token);
-                    this.$router.push('/dashboard');
+                if (data.message) {
+                    this.message = data.message;
                 }
+                    sessionStorage.setItem('token', data.token);
+                    window.location.href = '/dashboard';
             } catch (err) {
                 console.error('Login error:', err);
-                this.error = 'An error occurred. Please try again.';
+                this.message = 'An error occurred. Please try again.';
             }
         },
         logout() {
-            localStorage.removeItem('token');
-            this.$router.push('/login');
+            if (sessionStorage.getItem('token')) {
+                console.log('Logging out...');
+                sessionStorage.removeItem('token');
+                window.location.href = '/login';
+            } else {
+                console.warn('No token found.');
+                window.location.href = '/login';
+            }
+        },
+        Dashboard() {
+            if (sessionStorage.getItem('token')) {
+                console.log('redirecting.');
+                window.location.href = '/dashboard';
+            }
         }
     }
 };

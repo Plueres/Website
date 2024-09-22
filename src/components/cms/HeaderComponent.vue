@@ -64,10 +64,15 @@ export default {
             }
         },
         logout() {
-            console.log('Logging out...');
-            localStorage.removeItem('token');
-            this.$router.push('/login'); // Redirect to login page
-        }
+            if (sessionStorage.getItem('token')) {
+                console.log('Logging out...');
+                sessionStorage.removeItem('token');
+                window.location.href = '/login';
+            } else {
+                console.warn('No token found.');
+                window.location.href = '/login';
+            }
+        },
     }
 }
 </script>
