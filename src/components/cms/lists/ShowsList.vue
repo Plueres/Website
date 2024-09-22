@@ -15,12 +15,13 @@
         <div v-else>
             <p>Loading...</p>
         </div>
-        <PopUpModal :isVisible="isCreateModalVisible" :fields="fields" title="Create Show" submitButtonText="Create"
-            :apiUrl="createApiUrl" method="POST" :apiKey="apiKey" @save="handleCreateSave" @close="closeCreateModal" />
-        <PopUpModal :isVisible="isEditModalVisible" :fields="fields" title="Edit Show" submitButtonText="Save"
-            :apiUrl="editApiUrl" method="PUT" :apiKey="apiKey" :currentEntry="currentEntry" @save="handleEditSave"
-            @close="closeEditModal" />
-        <PopUpModal :isVisible="isDeleteModalVisible" title="Delete Show" submitButtonText="Delete"
+        <PopUpModal entityType="shows" :isVisible="isCreateModalVisible" :fields="fields" title="Create Show"
+            submitButtonText="Create" :apiUrl="createApiUrl" method="POST" :apiKey="apiKey" @save="handleCreateSave"
+            @close="closeCreateModal" />
+        <PopUpModal entityType="shows" :isVisible="isEditModalVisible" :fields="fields" title="Edit Show"
+            submitButtonText="Save" :apiUrl="editApiUrl" method="PUT" :apiKey="apiKey" :currentEntry="currentEntry"
+            @save="handleEditSave" @close="closeEditModal" />
+        <PopUpModal entityType="shows" :isVisible="isDeleteModalVisible" title="Delete Show" submitButtonText="Delete"
             :apiUrl="deleteApiUrl" method="DELETE" :apiKey="apiKey" :currentEntry="currentEntry" mode="delete"
             @delete="handleDelete" @close="closeDeleteModal" />
     </div>
@@ -31,7 +32,6 @@ import HeaderComponent from '@/components/cms/HeaderComponent.vue';
 import PopUpModal from '@/components/cms/PopUpModal.vue';
 import CardComponent from '@/components/cms/CardComponent.vue';
 import { showFields } from '@/config/showFields';
-let callCount = 0;
 
 export default {
     components: {
@@ -43,7 +43,7 @@ export default {
     data() {
         return {
             data: [],
-            lastFetchTime: 0,
+            lastFetchTime: null,
             isCreateModalVisible: false,
             isEditModalVisible: false,
             isDeleteModalVisible: false,
@@ -52,35 +52,64 @@ export default {
             createApiUrl: `${process.env.API_ORIGIN}/api/shows/post`,
             editApiUrl: `${process.env.API_ORIGIN}/api/shows/put`,
             deleteApiUrl: `${process.env.API_ORIGIN}/api/shows/delete`,
-            apiKey: process.env.API_KEY
+            apiKey: process.env.API_KEY,
+            callCount: 0
         };
     },
     mounted() {
         this.fetchData();
     },
+    created() {
+        // Load cached data from localStorage
+        const cachedData = localStorage.getItem('showsData');
+        const cachedTime = localStorage.getItem('showsLastFetchTime');
+        this.callCount = localStorage.getItem('callCount');
+
+        if (cachedData && cachedTime) {
+            this.data = JSON.parse(cachedData);
+            this.lastFetchTime = parseInt(cachedTime, 10);
+        }
+    },
     methods: {
         async fetchData() {
-            callCount++;
-            console.log(`fetchData called ${callCount} times`);
-            console.log('Fetching data');
-            const now = Date.now();
-            // Check if data is cached and not stale
-            if (this.data && (now - this.lastFetchTime < 1800000)) { // 30 minute cache
-                console.log('Using cached data:', this.data);
-                return; // Return early if cached data is valid
-            } else {
-                console.log('Data is either null or stale. Fetching new data...'); // Log if condition is not met
-            }
+            const now = new Date().getTime();
+            this.callCount++;
+            localStorage.setItem('callCount', this.callCount);
+            console.log(`fetchData called ${this.callCount} times`);
+            console.log('Fetching data...');
 
             try {
-                const response = await fetch(`${process.env.API_ORIGIN}/api/shows/get`, {
-                    headers: {
-                        'x-api-key': process.env.API_KEY
-                    }
-                });
+                const headers = {
+                    'x-api-key': process.env.API_KEY
+                };
+
+
+                // Add conditional headers if Last-Modified is available
+                if (this.lastFetchTime) {
+                    headers['If-Modified-Since'] = localStorage.getItem('lastFetchTime');
+                }
+                console.log('Headers:', headers['If-Modified-Since']);
+                const response = await fetch(`${process.env.API_ORIGIN}/api/shows/get`, { headers });
+
+                if (response.status === 304) {
+                    console.log('Data not modified. Using cached data:', this.data);
+                    // Return the cached data
+                    return this.data;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+
                 const result = await response.json();
-                this.data = result;
-                this.lastFetchTime = Date.now();
+                this.data = result.entries;
+                localStorage.setItem('showsData', JSON.stringify(this.data));
+                // Log before updating lastFetchTime
+                this.lastFetchTime = now;
+                localStorage.setItem('lastFetchTime', this.lastFetchTime);
+                // Log after updating lastFetchTime
+                console.log('Updated lastFetchTime new value:', this.lastFetchTime);
+
                 // Log the result to inspect its structure
                 console.log('Shows API Response:', result);
             } catch (error) {
@@ -92,12 +121,11 @@ export default {
             this.resetCreateFields(); // Reset fields for a new entry
         },
         closeCreateModal() {
-            this.fetchData();
             this.isCreateModalVisible = false;
         },
         handleCreateSave(result) {
             console.log('Created result:', result);
-            this.data.unshift(result.entities[0]); // Add the new show to the beginning of the list
+            this.data.unshift(result[0]); // Add the new show to the beginning of the list
             this.closeCreateModal();
         },
         openDeleteModal(id) {
@@ -105,7 +133,6 @@ export default {
             this.currentEntry = this.data.find(item => item.id === id);
         },
         closeDeleteModal() {
-            this.fetchData();
             this.isDeleteModalVisible = false;
         },
         handleDelete(result) {
@@ -116,6 +143,7 @@ export default {
             } else {
                 console.error('No entry found for the given ID:', result);
             }
+            this.fetchData();
             this.closeDeleteModal();
         },
         openEditModal(id) {
@@ -133,14 +161,13 @@ export default {
             }
         },
         closeEditModal() {
-            this.fetchData();
             this.isEditModalVisible = false;
         },
         handleEditSave(result) {
-            console.log('Edited result:', result); // Log the edited result
+            console.log('Edited result:', result[0]); // Log the edited result
 
             // Extract the updated show from the response
-            const updatedShow = result.entities[0]; // Assuming there's always one entity in the array
+            const updatedShow = result[0]; // Assuming there's always one entity in the array
 
             // Step 1: Find the index of the item to update
             const index = this.data.findIndex(item => item.id === updatedShow.id);
@@ -151,10 +178,11 @@ export default {
             if (index !== -1) {
                 // Step 3: Update the specific item in the local data array
                 this.data[index] = updatedShow; // Directly update the item
+                localStorage.setItem('showsData', JSON.stringify(this.data));
             } else {
                 console.error('No entry found for the given ID:', updatedShow.id); // Log an error if not found
             }
-
+            this.fetchData();
             // Step 4: Close the edit modal
             this.closeEditModal();
         },

@@ -15,6 +15,8 @@
         <div v-else>
             <p>Loading...</p>
         </div>
+
+        <!-- PopUp Modals -->
         <PopUpModal entityType="games" :isVisible="isCreateModalVisible" :fields="fields" title="Create Game"
             submitButtonText="Create" :apiUrl="createApiUrl" method="POST" :apiKey="apiKey" @save="handleCreateSave"
             @close="closeCreateModal" />
@@ -24,6 +26,13 @@
         <PopUpModal entityType="games" :isVisible="isDeleteModalVisible" title="Delete Game" submitButtonText="Delete"
             :apiUrl="deleteApiUrl" method="DELETE" :apiKey="apiKey" :currentEntry="currentEntry" mode="delete"
             @delete="handleDelete" @close="closeDeleteModal" />
+
+        <!-- Scroll Buttons -->
+        <div class="scroll-buttons">
+            <button class="scroll-button" @click="scrollToTop">Top</button>
+            <button class="scroll-button" @click="scrollToBottom">Bottom</button>
+        </div>
+
     </div>
 </template>
 
@@ -204,7 +213,37 @@ export default {
                 this.$set(this.data, index, updatedEntry); // Update the entry in the list
             }
             this.closeModal();
+        },
+        scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        scrollToBottom() {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
     }
 };
 </script>
+
+<style scoped lang="scss">
+@import '@/scss/_variables.scss';
+
+.scroll-button {
+    position: fixed;
+    right: 20px;
+    padding: 10px;
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.scroll-button:first-of-type {
+    bottom: 60px;
+}
+
+.scroll-button:last-of-type {
+    bottom: 20px;
+}
+</style>

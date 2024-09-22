@@ -1,7 +1,7 @@
 <template>
     <div v-if="isVisible" class="modal-container">
         <div class="modal">
-            <h2>{{ title }}</h2>
+            <h3>{{ title }}</h3>
             <form v-if="mode !== 'delete'" @submit.prevent="submit">
                 <div class="modal-field" v-for="field in fields" :key="field.id">
                     <label class="modal-label" :for="field.id">{{ field.label }}</label>
@@ -10,14 +10,19 @@
                     <textarea class="modal-textarea" v-if="field.type === 'textarea'" :id="field.id"
                         v-model="field.value"></textarea>
                 </div>
-                <button class="primary" type="submit">{{ submitButtonText }}</button>
-                <button class="secondary" type="button" @click="$emit('close')">Cancel</button>
+                <div class="buttons">
+                    <button class="primary" type="submit">{{ submitButtonText }}</button>
+                    <button class="secondary" type="button" @click="$emit('close')">Cancel</button>
+                </div>
             </form>
             <div v-else>
                 <p>Are you sure you want to delete this entry?</p>
-                <p><strong>{{ currentEntry.title }}</strong></p> <!-- Display the title or any other relevant info -->
-                <button class="danger" @click="confirmDelete">Delete</button>
-                <button class="secondary" @click="$emit('close')">Cancel</button>
+                <p><strong>{{ currentEntry.title }}</strong></p>
+                <p><strong>{{ currentEntry.id }}</strong></p>
+                <div class="buttons">
+                    <button class="danger" @click="confirmDelete">Delete</button>
+                    <button class="secondary" @click="$emit('close')">Cancel</button>
+                </div>
             </div>
         </div>
 
@@ -146,61 +151,84 @@ export default {
     display: grid;
     place-items: center;
     z-index: 18;
+    overflow: scroll;
+
+    .modal {
+        width: 80%;
+        height: fit-content;
+        background-color: white;
+        color: black;
+        box-shadow: 0 0 10px 0 darken($cms-background-color, 10%);
+        display: flex;
+        padding: 2rem;
+        border-radius: 6px;
+        justify-content: center;
+        flex-direction: column;
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        h3 {
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        .modal-field {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .modal-label {
+            margin: 0.5rem;
+            font-size: 1rem;
+            text-align: left;
+        }
+
+        .modal-input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .modal-textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        .buttons {
+            button {
+                display: flex;
+                width: 100%;
+                justify-content: center;
+                margin-left: unset;
+                margin-right: unset;
+            }
+        }
+    }
 }
 
-.modal {
-    width: 80%;
-    height: fit-content;
-    background-color: white;
-    color: black;
-    box-shadow: 0 0 10px 0 darken($cms-background-color, 10%);
-    display: flex;
-    padding: 2rem;
-    border-radius: 6px;
-    justify-content: center;
-    flex-direction: column;
+@media (min-width: $desktop-min-width) {
+    .modal-container {
+        .modal {
+            width: 50%;
 
-    form {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-
-    h2 {
-        margin: 0 0.2rem;
-        font-size: 1.4rem;
-        text-align: left;
-    }
-
-    .modal-field {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .modal-label {
-        margin: 0.5rem;
-        font-size: 1rem;
-        text-align: left;
-    }
-
-    .modal-input {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    .modal-textarea {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        resize: vertical;
-    }
-
-    button {
-        margin-left: unset;
-        margin-right: unset;
+            .buttons {
+                button {
+                    display: unset;
+                    width: unset;
+                    justify-content: unset;
+                    margin-left: unset;
+                    margin-right: unset;
+                }
+            }
+        }
     }
 }
 </style>
