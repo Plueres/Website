@@ -15,12 +15,13 @@
         <div v-else>
             <p>Loading...</p>
         </div>
-        <PopUpModal :isVisible="isCreateModalVisible" :fields="fields" title="Create Game" submitButtonText="Create"
-            :apiUrl="createApiUrl" method="POST" :apiKey="apiKey" @save="handleCreateSave" @close="closeCreateModal" />
-        <PopUpModal :isVisible="isEditModalVisible" :fields="fields" title="Edit Game" submitButtonText="Save"
-            :apiUrl="editApiUrl" method="PUT" :apiKey="apiKey" :currentEntry="currentEntry" @save="handleEditSave"
-            @close="closeEditModal" />
-        <PopUpModal :isVisible="isDeleteModalVisible" title="Delete Game" submitButtonText="Delete"
+        <PopUpModal entityType="games" :isVisible="isCreateModalVisible" :fields="fields" title="Create Game"
+            submitButtonText="Create" :apiUrl="createApiUrl" method="POST" :apiKey="apiKey" @save="handleCreateSave"
+            @close="closeCreateModal" />
+        <PopUpModal entityType="games" :isVisible="isEditModalVisible" :fields="fields" title="Edit Game"
+            submitButtonText="Save" :apiUrl="editApiUrl" method="PUT" :apiKey="apiKey" :currentEntry="currentEntry"
+            @save="handleEditSave" @close="closeEditModal" />
+        <PopUpModal entityType="games" :isVisible="isDeleteModalVisible" title="Delete Game" submitButtonText="Delete"
             :apiUrl="deleteApiUrl" method="DELETE" :apiKey="apiKey" :currentEntry="currentEntry" mode="delete"
             @delete="handleDelete" @close="closeDeleteModal" />
     </div>
@@ -71,11 +72,11 @@ export default {
     },
     methods: {
         async fetchData() {
+            const now = new Date().getTime();
             this.callCount++;
             localStorage.setItem('callCount', this.callCount);
             console.log(`fetchData called ${this.callCount} times`);
             console.log('Fetching data...');
-
 
             try {
                 const headers = {
@@ -104,9 +105,10 @@ export default {
                 this.data = result.entries;
                 localStorage.setItem('gamesData', JSON.stringify(this.data));
                 // Log before updating lastFetchTime
-                this.lastFetchTime = new Date().getTime();
+                this.lastFetchTime = now;
+                localStorage.setItem('lastFetchTime', this.lastFetchTime);
                 // Log after updating lastFetchTime
-                console.log('Updated lastFetchTime. New value:', this.lastFetchTime);
+                console.log('Updated lastFetchTime new value:', this.lastFetchTime);
 
                 // Log the result to inspect its structure
                 console.log('Games API Response:', result);
@@ -119,7 +121,6 @@ export default {
             this.resetCreateFields(); // Reset fields for a new entry
         },
         closeCreateModal() {
-            this.fetchData();
             this.isCreateModalVisible = false;
         },
         handleCreateSave(result) {
@@ -132,7 +133,6 @@ export default {
             this.currentEntry = this.data.find(item => item.id === id);
         },
         closeDeleteModal() {
-            this.fetchData();
             this.isDeleteModalVisible = false;
         },
         handleDelete(result) {
@@ -143,6 +143,7 @@ export default {
             } else {
                 console.error('No entry found for the given ID:', result);
             }
+            this.fetchData();
             this.closeDeleteModal();
         },
         openEditModal(id) {
@@ -160,7 +161,6 @@ export default {
             }
         },
         closeEditModal() {
-            this.fetchData();
             this.isEditModalVisible = false;
         },
         handleEditSave(result) {
@@ -178,10 +178,11 @@ export default {
             if (index !== -1) {
                 // Step 3: Update the specific item in the local data array
                 this.data[index] = updatedGame; // Directly update the item
+                localStorage.setItem('gamesData', JSON.stringify(this.data));
             } else {
                 console.error('No entry found for the given ID:', updatedGame.id); // Log an error if not found
             }
-
+            this.fetchData();
             // Step 4: Close the edit modal
             this.closeEditModal();
         },

@@ -27,6 +27,7 @@
 <script>
 export default {
     props: {
+        entityType: String,
         isVisible: Boolean,
         fields: {
             type: Array,
@@ -55,6 +56,7 @@ export default {
                     this.$emit('close');
                     return;
                 }
+                console.warn(this.currentEntry.id);
 
                 const dataToSend = {
                     ...(this.currentEntry.id ? { id: this.currentEntry.id } : {}), // Include id if currentEntry has an id
@@ -83,14 +85,18 @@ export default {
                     throw new Error(`Network response was not ok: ${errorText}`);
                 }
 
-                const result = await response.json();
+                let result = await response.json();
+                result = result.lists[this.entityType].entries;
 
                 // Log the result to understand its structure
-                console.log('API Response:', result[0]);
+                console.log('API Response:', result);
+                console.log('result is array:', result);
 
                 // Check if result is defined, is an array, and has at least one element
                 if (result && Array.isArray(result) && result.length > 0) {
-                    this.$emit('save', result[0]); // Emit the first element of the result array back to the parent
+                    this.$emit('save', result); // Emit the first element of the result array back to the parent
+                    this.$emit('close'); // Close the modal
+                    console.log('Emitting save event with:', result[0]);
                 } else {
                     throw new Error('Unexpected response format');
                 }
