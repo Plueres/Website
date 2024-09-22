@@ -6,6 +6,7 @@ import DashboardPage from '@/components/cms/DashboardPage.vue';
 import GamesList from '@/components/cms/lists/GamesList.vue';
 import MoviesList from '@/components/cms/lists/MoviesList.vue';
 import ShowsList from '@/components/cms/lists/ShowsList.vue';
+import NotFoundPage from '@/components/NotFoundPage.vue';
 
 const routes = [
     {
@@ -43,6 +44,11 @@ const routes = [
         path: '/dashboard/shows',
         name: 'Shows',
         component: ShowsList,
+    },
+    {
+        path: '/:pathMatch(.*)*', // Catch all undefined paths
+        name: 'NotFound',
+        component: NotFoundPage,
     },
 ];
 
