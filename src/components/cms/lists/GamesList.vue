@@ -142,6 +142,8 @@ export default {
           { headers }
         );
 
+        this.$refs.toastNotification.showToast(response.status, "info");
+
         if (response.status === 304) {
           console.log("Data not modified. Using cached data:", this.data);
           console.warn("Response from response:", response);
