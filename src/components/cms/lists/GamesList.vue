@@ -99,7 +99,7 @@ export default {
 
                 // Add conditional headers if Last-Modified is available
                 if (this.lastFetchTime) {
-                    headers['If-Modified-Since'] = localStorage.getItem('lastFetchTime');
+                    headers['If-Modified-Since'] = localStorage.getItem('gamesLastFetchTime');
                 }
                 console.log('Headers:', headers['If-Modified-Since']);
                 
@@ -124,7 +124,7 @@ export default {
                 localStorage.setItem('gamesData', JSON.stringify(this.data));
                 // Log before updating lastFetchTime
                 this.lastFetchTime = now;
-                localStorage.setItem('lastFetchTime', this.lastFetchTime);
+                localStorage.setItem('gamesLastFetchTime', this.lastFetchTime);
                 // Log after updating lastFetchTime
                 console.log('Updated lastFetchTime new value:', this.lastFetchTime);
                 console.log('Games API Response:', jsonResponse);

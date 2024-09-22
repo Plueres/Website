@@ -28,7 +28,7 @@ export default {
         this.message = "";
         this.$el.style.margin = 0;
         this.$el.style.padding = 0;
-      }, 10000000); // change back to 10000 for 10 seconds
+      }, 10000);
     },
     checkMessageType(messageType) {
       switch (messageType) {

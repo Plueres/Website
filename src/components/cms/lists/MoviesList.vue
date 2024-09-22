@@ -1,5 +1,6 @@
 <template>
     <HeaderComponent />
+    <ToastNotification ref="toastNotification" />
     <div class="page-content">
         <h1>Movies Page</h1>
         <p>This is the movieslist page.</p>
@@ -15,6 +16,8 @@
         <div v-else>
             <p>Loading...</p>
         </div>
+
+        <!-- PopUp Modals -->
         <PopUpModal entityType="movies" :isVisible="isCreateModalVisible" :fields="fields" title="Create Movie"
             submitButtonText="Create" :apiUrl="createApiUrl" method="POST" :apiKey="apiKey" @save="handleCreateSave"
             @close="closeCreateModal" />
@@ -24,6 +27,13 @@
         <PopUpModal entityType="movies" :isVisible="isDeleteModalVisible" title="Delete Movie" submitButtonText="Delete"
             :apiUrl="deleteApiUrl" method="DELETE" :apiKey="apiKey" :currentEntry="currentEntry" mode="delete"
             @delete="handleDelete" @close="closeDeleteModal" />
+
+        <!-- Scroll Buttons -->
+        <div class="scroll-buttons">
+            <button class="scroll-button" @click="scrollToTop">Top</button>
+            <button class="scroll-button" @click="scrollToBottom">Bottom</button>
+        </div>
+
     </div>
 </template>
 
@@ -32,12 +42,14 @@ import HeaderComponent from '@/components/cms/HeaderComponent.vue';
 import PopUpModal from '@/components/cms/PopUpModal.vue';
 import CardComponent from '@/components/cms/CardComponent.vue';
 import { movieFields } from '@/config/movieFields';
+import ToastNotification from '@/components/cms/ToastNotification.vue';
 
 export default {
     components: {
         HeaderComponent,
         PopUpModal,
-        CardComponent
+        CardComponent,
+        ToastNotification
     },
     name: 'GetMovies',
     data() {
@@ -53,7 +65,9 @@ export default {
             editApiUrl: `${process.env.API_ORIGIN}/api/movies/put`,
             deleteApiUrl: `${process.env.API_ORIGIN}/api/movies/delete`,
             apiKey: process.env.API_KEY,
-            callCount: 0
+            callCount: 0,
+            message: '',
+            messageType: ''
         };
     },
     mounted() {
@@ -76,8 +90,7 @@ export default {
             this.callCount++;
             localStorage.setItem('callCount', this.callCount);
             console.log(`fetchData called ${this.callCount} times`);
-            console.log('Fetching data...');
-
+            
             try {
                 const headers = {
                     'x-api-key': process.env.API_KEY
@@ -86,13 +99,17 @@ export default {
 
                 // Add conditional headers if Last-Modified is available
                 if (this.lastFetchTime) {
-                    headers['If-Modified-Since'] = localStorage.getItem('lastFetchTime');
+                    headers['If-Modified-Since'] = localStorage.getItem('moviesLastFetchTime');
                 }
                 console.log('Headers:', headers['If-Modified-Since']);
+                
                 const response = await fetch(`${process.env.API_ORIGIN}/api/movies/get`, { headers });
+                
 
                 if (response.status === 304) {
                     console.log('Data not modified. Using cached data:', this.data);
+                    console.warn('Response from response:', response);
+                    this.$refs.toastNotification.showToast('Using cached data', 'info');
                     // Return the cached data
                     return this.data;
                 }
@@ -100,20 +117,20 @@ export default {
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
+                let jsonResponse = await response.json();
+                console.log('Parsed JSON Response:', jsonResponse);
 
-                const result = await response.json();
-                this.data = result.entries;
+                this.data = jsonResponse.entries;
                 localStorage.setItem('moviesData', JSON.stringify(this.data));
                 // Log before updating lastFetchTime
                 this.lastFetchTime = now;
-                localStorage.setItem('lastFetchTime', this.lastFetchTime);
+                localStorage.setItem('moviesLastFetchTime', this.lastFetchTime);
                 // Log after updating lastFetchTime
                 console.log('Updated lastFetchTime new value:', this.lastFetchTime);
-
-                // Log the result to inspect its structure
-                console.log('Movies API Response:', result);
+                console.log('Movies API Response:', jsonResponse);
             } catch (error) {
                 console.error('Error fetching data:', error);
+                this.$refs.toastNotification.showToast(`Could not retrieve the list`, 'error');
             }
         },
         openCreateModal() {
@@ -124,8 +141,9 @@ export default {
             this.isCreateModalVisible = false;
         },
         handleCreateSave(result) {
-            console.log('Created result:', result);
-            this.data.unshift(result[0]); // Add the new movie to the beginning of the list
+            console.log('Created result:', result.data);
+            this.$refs.toastNotification.showToast(result.message, result.messageType);
+            this.data.unshift(result.data[0]); // Add the new movie to the beginning of the list
             this.closeCreateModal();
         },
         openDeleteModal(id) {
@@ -135,13 +153,15 @@ export default {
         closeDeleteModal() {
             this.isDeleteModalVisible = false;
         },
-        handleDelete(result) {
-            console.log('Deleted result:', result);
-            const index = this.data.findIndex(item => item.id === result);
+        handleDelete(currentEntry, result) {
+            console.log('Deleted result:', currentEntry, result);
+            const index = this.data.findIndex(item => item.id === currentEntry);
             if (index !== -1) {
                 this.data.splice(index, 1); // Remove the item from the list
+                this.$refs.toastNotification.showToast(result.message, result.messageType);
             } else {
-                console.error('No entry found for the given ID:', result);
+                console.error('No entry found for the given ID:', currentEntry);
+                this.$refs.toastNotification.showToast(result.message, result.messageType);
             }
             this.fetchData();
             this.closeDeleteModal();
@@ -164,10 +184,10 @@ export default {
             this.isEditModalVisible = false;
         },
         handleEditSave(result) {
-            console.log('Edited result:', result[0]); // Log the edited result
+            console.log('Edited result:', result.data[0]); // Log the edited result
 
             // Extract the updated movie from the response
-            const updatedMovie = result[0]; // Assuming there's always one entity in the array
+            const updatedMovie = result.data[0]; // Assuming there's always one entity in the array
 
             // Step 1: Find the index of the item to update
             const index = this.data.findIndex(item => item.id === updatedMovie.id);
@@ -179,6 +199,7 @@ export default {
                 // Step 3: Update the specific item in the local data array
                 this.data[index] = updatedMovie; // Directly update the item
                 localStorage.setItem('moviesData', JSON.stringify(this.data));
+                this.$refs.toastNotification.showToast(result.message, result.messageType);
             } else {
                 console.error('No entry found for the given ID:', updatedMovie.id); // Log an error if not found
             }
@@ -204,7 +225,37 @@ export default {
                 this.$set(this.data, index, updatedEntry); // Update the entry in the list
             }
             this.closeModal();
+        },
+        scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        scrollToBottom() {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
     }
 };
 </script>
+
+<style scoped lang="scss">
+@import '@/scss/_variables.scss';
+
+.scroll-button {
+    position: fixed;
+    right: 20px;
+    padding: 10px;
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.scroll-button:first-of-type {
+    bottom: 60px;
+}
+
+.scroll-button:last-of-type {
+    bottom: 20px;
+}
+</style>

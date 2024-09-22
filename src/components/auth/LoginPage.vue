@@ -1,6 +1,6 @@
 <template>
     <div class="login">
-        <h2>Login</h2>
+        <h3>Login</h3>
         <form @submit.prevent="login" v-if="!isLoggedIn">
             <div>
                 <label for="username">Username:</label>
