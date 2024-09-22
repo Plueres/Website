@@ -134,13 +134,15 @@ export default {
                     body: JSON.stringify(dataToSend) // Send the modified body
                 });
 
+                const parsedResponse = await response.json();
+                
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    this.$refs.toastNotification.showToast(errorText.message, errorText.messageType);
-                    throw new Error(`Network response was not ok: ${errorText}`);
+                    this.$refs.toastNotification.showToast(parsedResponse.message, parsedResponse.messageType);
+                    throw new Error(parsedResponse.message);
                 }
 
-                this.$emit('delete', this.currentEntry.id); // Emit delete event
+                console.warn('Deleted entry:', this.currentEntry.id);
+                this.$emit('delete', this.currentEntry.id, parsedResponse); // Emit delete event
             } catch (error) {
                 console.error('Error deleting entry:', error);
             }

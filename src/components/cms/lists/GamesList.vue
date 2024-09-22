@@ -102,11 +102,14 @@ export default {
                     headers['If-Modified-Since'] = localStorage.getItem('lastFetchTime');
                 }
                 console.log('Headers:', headers['If-Modified-Since']);
+                
                 const response = await fetch(`${process.env.API_ORIGIN}/api/games/get`, { headers });
+                
 
                 if (response.status === 304) {
                     console.log('Data not modified. Using cached data:', this.data);
-                    this.$refs.toastNotification.showToast(response.message, response.messageType);
+                    console.warn('Response from response:', response);
+                    this.$refs.toastNotification.showToast('Using cached data', 'info');
                     // Return the cached data
                     return this.data;
                 }
@@ -114,20 +117,20 @@ export default {
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
+                let jsonResponse = await response.json();
+                console.log('Parsed JSON Response:', jsonResponse);
 
-                const result = await response.json();
-                this.data = result.entries;
+                this.data = jsonResponse.data.entries;
                 localStorage.setItem('gamesData', JSON.stringify(this.data));
                 // Log before updating lastFetchTime
                 this.lastFetchTime = now;
                 localStorage.setItem('lastFetchTime', this.lastFetchTime);
                 // Log after updating lastFetchTime
                 console.log('Updated lastFetchTime new value:', this.lastFetchTime);
-
-                // Log the result to inspect its structure
-                console.log('Games API Response:', result);
+                console.log('Games API Response:', jsonResponse);
             } catch (error) {
                 console.error('Error fetching data:', error);
+                this.$refs.toastNotification.showToast(`Could not retrieve the list`, 'error');
             }
         },
         openCreateModal() {
@@ -150,14 +153,14 @@ export default {
         closeDeleteModal() {
             this.isDeleteModalVisible = false;
         },
-        handleDelete(result) {
-            console.log('Deleted result:', result.data);
-            const index = this.data.findIndex(item => item.id === result.data);
+        handleDelete(currentEntry, result) {
+            console.log('Deleted result:', currentEntry, result);
+            const index = this.data.findIndex(item => item.id === currentEntry);
             if (index !== -1) {
                 this.data.splice(index, 1); // Remove the item from the list
                 this.$refs.toastNotification.showToast(result.message, result.messageType);
             } else {
-                console.error('No entry found for the given ID:', result.data);
+                console.error('No entry found for the given ID:', currentEntry);
                 this.$refs.toastNotification.showToast(result.message, result.messageType);
             }
             this.fetchData();
