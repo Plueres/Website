@@ -198,12 +198,8 @@ export default {
         this.$refs.toastNotification.showToast(
           "Error fetching data:" +
             error.message +
-            " " +
-            "Error stack:" +
-            error.stack +
-            " " +
-            "Error details:" +
-            error,
+            ". " +
+            process.env.CORS_ORIGIN,
           "error"
         );
       }
