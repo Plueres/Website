@@ -101,12 +101,10 @@ export default {
                 }
 
                 const result = await response.json();
-                console.log('Result:', result);
                 this.data = result.entries;
+                localStorage.setItem('gamesData', JSON.stringify(this.data));
                 // Log before updating lastFetchTime
-                console.log('Updating lastFetchTime. Previous value:', this.lastFetchTime);
                 this.lastFetchTime = new Date().getTime();
-                localStorage.setItem('lastFetchTime', this.lastFetchTime);
                 // Log after updating lastFetchTime
                 console.log('Updated lastFetchTime. New value:', this.lastFetchTime);
 
@@ -126,7 +124,7 @@ export default {
         },
         handleCreateSave(result) {
             console.log('Created result:', result);
-            this.data.unshift(result.entities[0]); // Add the new game to the beginning of the list
+            this.data.unshift(result[0]); // Add the new game to the beginning of the list
             this.closeCreateModal();
         },
         openDeleteModal(id) {
@@ -166,10 +164,10 @@ export default {
             this.isEditModalVisible = false;
         },
         handleEditSave(result) {
-            console.log('Edited result:', result); // Log the edited result
+            console.log('Edited result:', result[0]); // Log the edited result
 
             // Extract the updated game from the response
-            const updatedGame = result.entities[0]; // Assuming there's always one entity in the array
+            const updatedGame = result[0]; // Assuming there's always one entity in the array
 
             // Step 1: Find the index of the item to update
             const index = this.data.findIndex(item => item.id === updatedGame.id);
