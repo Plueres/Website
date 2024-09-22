@@ -90,7 +90,8 @@ export default {
             this.callCount++;
             localStorage.setItem('callCount', this.callCount);
             console.log(`fetchData called ${this.callCount} times`);
-
+                this.$refs.toastNotification.showToast(`TestMessage`, 'error');
+            
             try {
                 const headers = {
                     'x-api-key': process.env.API_KEY
@@ -120,7 +121,7 @@ export default {
                 let jsonResponse = await response.json();
                 console.log('Parsed JSON Response:', jsonResponse);
 
-                this.data = jsonResponse.data.entries;
+                this.data = jsonResponse.entries;
                 localStorage.setItem('gamesData', JSON.stringify(this.data));
                 // Log before updating lastFetchTime
                 this.lastFetchTime = now;
