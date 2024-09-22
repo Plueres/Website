@@ -90,7 +90,6 @@ export default {
             this.callCount++;
             localStorage.setItem('callCount', this.callCount);
             console.log(`fetchData called ${this.callCount} times`);
-                this.$refs.toastNotification.showToast(`TestMessage`, 'error');
             
             try {
                 const headers = {
