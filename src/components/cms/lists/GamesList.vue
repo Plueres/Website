@@ -141,9 +141,6 @@ export default {
           `${process.env.API_ORIGIN}/api/games/get`,
           { headers }
         );
-
-        this.$refs.toastNotification.showToast(response.status, "info");
-
         if (response.status === 304) {
           console.log("Data not modified. Using cached data:", this.data);
           console.warn("Response from response:", response);
@@ -153,7 +150,36 @@ export default {
         }
 
         if (!response.ok) {
-          throw new Error("Failed to fetch data");
+          // Log detailed error information
+          const errorMessage = `Failed to fetch data. Status: ${response.status}`;
+          console.error(errorMessage);
+          console.error("Response body:", await response.text());
+
+          // Show detailed error in toast notification
+          this.$refs.toastNotification.showToast(
+            `Failed to fetch data. Status: ${response.status}`,
+            "error"
+          );
+
+          // Additional logging for network-related issues
+          if (response.status === 0) {
+            this.$refs.toastNotification.showToast(
+              "Network error: Please check your internet connection.",
+              "error"
+            );
+          } else if (response.status >= 500) {
+            this.$refs.toastNotification.showToast(
+              "Server error: Please try again later.",
+              "error"
+            );
+          } else if (response.status === 404) {
+            this.$refs.toastNotification.showToast(
+              "Resource not found: Please check the URL.",
+              "error"
+            );
+          }
+
+          throw new Error(errorMessage);
         }
         let jsonResponse = await response.json();
         console.log("Parsed JSON Response:", jsonResponse);
