@@ -142,9 +142,8 @@ export default {
           { headers }
         );
         console.log("Response Status:", response.status);
-        if (response.status !== 304) {
-          const responseBody = await response.text(); // Use text() to log raw response
-          console.log("Response Body:", responseBody);
+        if (response.status === 200) {
+          console.error("response is 200");
         }
         if (response.status === 304) {
           console.log("Data not modified. Using cached data:", this.data);
