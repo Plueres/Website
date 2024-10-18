@@ -140,7 +140,10 @@ export default {
         // it gets to here
         const response = await fetch(
           `${process.env.API_ORIGIN}/api/games/get`,
-          { headers }
+          {
+            method: "GET",
+            headers,
+          }
         );
         console.log("Response Status:", response.status);
         console.log("Response Headers:", response.headers);
