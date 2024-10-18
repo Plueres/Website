@@ -137,15 +137,11 @@ export default {
           );
           console.log("Headers:", headers["If-Modified-Since"]);
         }
-        try {
-          await fetch(`${process.env.API_ORIGIN}/api/movies/get`, { headers });
-        } catch (error) {
-          console.log("Error fetching fetch movies data:", error);
-        }
         const response = await fetch(
           `${process.env.API_ORIGIN}/api/movies/get`,
           { headers }
         );
+        console.warn("Response from response:", response);
         if (response.status === 304) {
           console.log("Data not modified. Using cached data:", this.data);
           console.warn("Response from response:", response);
