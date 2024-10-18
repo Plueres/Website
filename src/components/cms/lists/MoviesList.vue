@@ -125,7 +125,7 @@ export default {
       localStorage.setItem("callCount", this.callCount);
       console.log(`fetchData called ${this.callCount} times`);
 
-      {
+      try {
         const headers = {
           "x-api-key": process.env.API_KEY,
         };
@@ -171,14 +171,13 @@ export default {
         // Log after updating lastFetchTime
         console.log("Updated lastFetchTime new value:", this.lastFetchTime);
         console.log("Movies API Response:", jsonResponse);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        this.$refs.toastNotification.showToast(
+          `Could not retrieve the list`,
+          "error"
+        );
       }
-      //    catch (error) {
-      //     console.error("Error fetching data:", error);
-      //     this.$refs.toastNotification.showToast(
-      //       `Could not retrieve the list`,
-      //       "error"
-      //     );
-      //   }
     },
     openCreateModal() {
       this.isCreateModalVisible = true;
