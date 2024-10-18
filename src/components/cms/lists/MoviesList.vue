@@ -125,7 +125,7 @@ export default {
       localStorage.setItem("callCount", this.callCount);
       console.log(`fetchData called ${this.callCount} times`);
 
-      try {
+      {
         const headers = {
           "x-api-key": process.env.API_KEY,
         };
@@ -154,6 +154,10 @@ export default {
         }
 
         if (!response.ok) {
+          this.$refs.toastNotification.showToast(
+            "Response was not ok",
+            "error"
+          );
           throw new Error("Failed to fetch data");
         }
         let jsonResponse = await response.json();
@@ -167,13 +171,14 @@ export default {
         // Log after updating lastFetchTime
         console.log("Updated lastFetchTime new value:", this.lastFetchTime);
         console.log("Movies API Response:", jsonResponse);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.$refs.toastNotification.showToast(
-          `Could not retrieve the list`,
-          "error"
-        );
       }
+      //    catch (error) {
+      //     console.error("Error fetching data:", error);
+      //     this.$refs.toastNotification.showToast(
+      //       `Could not retrieve the list`,
+      //       "error"
+      //     );
+      //   }
     },
     openCreateModal() {
       this.isCreateModalVisible = true;
