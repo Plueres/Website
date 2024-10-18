@@ -128,6 +128,7 @@ export default {
       try {
         const headers = {
           "x-api-key": process.env.API_KEY,
+          "Content-Type": "application/json",
         };
 
         // Add conditional headers if Last-Modified is available
@@ -136,7 +137,7 @@ export default {
             localStorage.getItem("gamesLastFetchTime");
         }
         console.log("Headers:", headers["If-Modified-Since"]);
-
+        // it gets to here
         const response = await fetch(
           `${process.env.API_ORIGIN}/api/games/get`,
           { headers }
