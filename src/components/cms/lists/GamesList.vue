@@ -141,6 +141,8 @@ export default {
           `${process.env.API_ORIGIN}/api/games/get`,
           { headers }
         );
+        console.log("Response Status:", response.status);
+        console.log("Response Headers:", response.headers);
         if (response.status === 304) {
           console.log("Data not modified. Using cached data:", this.data);
           console.warn("Response from response:", response);
