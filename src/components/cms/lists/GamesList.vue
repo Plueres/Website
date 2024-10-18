@@ -196,10 +196,7 @@ export default {
         console.error("Error fetching data:", error);
 
         this.$refs.toastNotification.showToast(
-          "Error fetching data:" +
-            error.message +
-            ". " +
-            process.env.CORS_ORIGIN,
+          "Error fetching data:" + error.message,
           "error"
         );
       }
