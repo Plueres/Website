@@ -140,27 +140,26 @@ export default {
         const response = await fetch(
           `${process.env.API_ORIGIN}/api/movies/get`,
           { headers }
-        ).then((response) => {
-          console.log("Response Status:", response.status);
-          if (response.status === 200) {
-            console.error("response is 200");
-          }
-          if (response.status === 304) {
-            console.log("Data not modified. Using cached data:", this.data);
-            console.warn("Response from response:", response);
-            this.$refs.toastNotification.showToast("Using cached data", "info");
-            // Return the cached data
-            return this.data;
-          }
+        );
+        console.log("Response Status:", response.status);
+        if (response.status === 200) {
+          console.error("response is 200");
+        }
+        if (response.status === 304) {
+          console.log("Data not modified. Using cached data:", this.data);
+          console.warn("Response from response:", response);
+          this.$refs.toastNotification.showToast("Using cached data", "info");
+          // Return the cached data
+          return this.data;
+        }
 
-          if (!response.ok) {
-            this.$refs.toastNotification.showToast(
-              "Response was not ok",
-              "error"
-            );
-            throw new Error("Failed to fetch data");
-          }
-        });
+        if (!response.ok) {
+          this.$refs.toastNotification.showToast(
+            "Response was not ok",
+            "error"
+          );
+          throw new Error("Failed to fetch data");
+        }
         let jsonResponse = await response.json();
         console.log("Parsed JSON Response:", jsonResponse);
 
