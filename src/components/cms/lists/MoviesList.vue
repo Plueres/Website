@@ -135,13 +135,17 @@ export default {
           headers["If-Modified-Since"] = localStorage.getItem(
             "moviesLastFetchTime"
           );
-          console.log("Headers:", headers["If-Modified-Since"]);
         }
+        console.log("Headers:", headers["If-Modified-Since"]);
         const response = await fetch(
           `${process.env.API_ORIGIN}/api/movies/get`,
           { headers }
         );
-        console.warn("Response from response:", response);
+        console.log("Response Status:", response.status);
+        if (response.status !== 304) {
+          const responseBody = await response.text(); // Use text() to log raw response
+          console.log("Response Body:", responseBody);
+        }
         if (response.status === 304) {
           console.log("Data not modified. Using cached data:", this.data);
           console.warn("Response from response:", response);
