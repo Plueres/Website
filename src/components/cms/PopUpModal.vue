@@ -127,7 +127,7 @@ export default {
         // Check if result is defined, is an array, and has at least one element
         if (result && result.length > 0) {
           if (!Array.isArray(result)) {
-            console.log(
+            console.warn(
               "Successful but the response was not an array, most likely a bug in the API"
             );
           }
