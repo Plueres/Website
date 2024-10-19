@@ -244,6 +244,8 @@ export default {
       // Extract the updated movie from the response
       const updatedMovie = result.data[0]; // Assuming there's always one entity in the array
 
+      console.warn("Updated Movie:", updatedMovie); // Log the updated movie
+
       // Step 1: Find the index of the item to update
       const index = this.data.findIndex((item) => item.id === updatedMovie.id);
       console.log("Current data:", this.data); // Log the current state of the data array
