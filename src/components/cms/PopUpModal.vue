@@ -13,6 +13,16 @@
             :id="field.id"
             v-model="field.value"
           />
+          <select
+            class="modal-select"
+            v-if="field.type === 'select'"
+            :id="field.id"
+            v-modal="field.value"
+          >
+            <!--! These options arent send through the data, research this and make sure it works -->
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
           <textarea
             class="modal-textarea"
             v-if="field.type === 'textarea'"
@@ -230,6 +240,15 @@ export default {
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
+    }
+
+    .modal-select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      & option {
+        border-radius: 4px;
+      }
     }
 
     .modal-textarea {
